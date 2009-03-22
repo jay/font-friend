@@ -1,4 +1,4 @@
-#typography-select {overflow:hidden; position: fixed; bottom:0; left:30px; background-color:#fff; background-color:rgba(255,255,255,0.9); width:600px; color:#222; -moz-box-shadow:1px 1px 5px rgba(0,0,0,.3); -webkit-box-shadow:1px 1px 5px rgba(0,0,0,.3); box-shadow:1px 1px 5px rgba(0,0,0,.3); z-index:10000; text-align:left; height:280px;}
+#font-friend {overflow:hidden; position: fixed; bottom:0; left:30px; background-color:#fff; background-color:rgba(255,255,255,0.9); width:600px; color:#222; -moz-box-shadow:1px 1px 5px rgba(0,0,0,.3); -webkit-box-shadow:1px 1px 5px rgba(0,0,0,.3); box-shadow:1px 1px 5px rgba(0,0,0,.3); z-index:10000; text-align:left; height:280px;}
 #typo-drop {padding:12px 12px 12px 36px;}
 #typo-toggle {background-color:#222; color:#eee; display:block; width:12px; height:16px; padding:0 1px 0 3px; position:absolute; top:0; left:0; font-size:16px; line-height:1; cursor:pointer;}
 #typo-toggle:hover {color:#fff; background-color:#555;}
@@ -26,5 +26,5 @@
 #typo-blah {width:100px; margin-left:5px;}
 #typo-drop ol label {margin-left:5px;}
 #typo-credit {position:absolute; bottom:21px; left:32px; font-size:9px;}
-#typography-select a {color:#4C0003 !important; text-decoration:underline !important; border:0 !important;}
-#typography-select a:hover {color:#A60007 !important;}
+#font-friend a {color:#4C0003 !important; text-decoration:underline !important; border:0 !important;}
+#font-friend a:hover {color:#A60007 !important;}
