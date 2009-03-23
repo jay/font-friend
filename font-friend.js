@@ -2,7 +2,7 @@
  * Soma FontFriend 0.9
  * http://somadesign.ca/projects/fontfriend
  * 
- * Copyright (c) 2009 Matt Wiebe
+ * Copyright (c) 2009 Matt Wiebe 
  * Licensed under the GPL v2 license
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
