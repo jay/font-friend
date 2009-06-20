@@ -8,8 +8,8 @@
 #typo-drop div#typo-selector {width:130px;}
 #typo-drop div#typo-font-family {width:240px;}
 #typo-selector p {font-size:9px !important; line-height:1.2 !important; margin:1em 0 0 !important; padding:0 !important;}
-#typo-controls {position:absolute; bottom:60px; left:65px; width:55px; height:60px;}
-#typo-controls div {position:absolute; font-size:20px; width:1em; height:1em; cursor:pointer; color:#555; min-width:inherit !important; min-height:inherit !important;}
+#typo-controls {position:absolute; bottom:60px; left:65px; width:55px !important; height:60px; margin:0 !important; padding:0 !important;}
+#typo-controls div {position:absolute; font-size:20px; width:1em; height:1em; cursor:pointer; color:#555; min-width:inherit !important; min-height:inherit !important; padding:0; margin:0; float:none;}
 #typo-controls div:hover {color:#000;}
 #typo-controls .up {left:1em; top:0;}
 #typo-controls .down {left:1em; bottom:0;}
@@ -19,12 +19,17 @@
 #typo-drop #typo-font-family ul#typo-font-family-sans {padding-right:10px; width:115px;}
 #typo-drop ol li {list-style: none outside}
 #typo-drop ol, #typo-drop ul {margin:0; padding:0;}
-#typo-drop li {font-size:11px !important; line-height:1.5 !important; margin:0 !important; padding:0 !important; list-style: none outside none !important; text-indent:0 !important;}
-#typo-drop li.core {margin-bottom:4px !important;}
-#typo-drop ul li:hover {cursor:pointer; background-color:#e6e6e6;}
+#typo-drop li {font-size:11px !important; line-height:1.5 !important; margin:0 !important; padding:0 !important; list-style: none outside none !important; text-indent:0 !important; height:auto !important;}
+#typo-drop li.core {margin-bottom:4px !important; padding:0 !important;}
+#typo-drop ul li:hover {cursor:pointer; background-color:#e6e6e6 !important;}
+#typo-drop ul li.family-custom {margin:12px 0 0 !important;}
+#typo-drop ul li.family-custom:hover {cursor:default; background:none;}
+#family-custom {width:105px;}
 #typo-drop ol input[type=radio] {margin-left:-5px;}
 #typo-blah {width:100px; margin-left:5px;}
 #typo-drop ol label {margin-left:5px;}
-#typo-credit {position:absolute; bottom:21px; left:32px; font-size:9px;}
+#typo-credit {position:absolute; bottom:21px; left:32px; font-size:9px; margin:0 !important;}
 #font-friend a {color:#4C0003 !important; text-decoration:underline !important; border:0 !important;}
 #font-friend a:hover {color:#A60007 !important;}
+#typo-clear {position:absolute; bottom:0; right:0; padding:5px 5px 0 !important; text-decoration: line-through; opacity:.1; font-size:21px; margin:0 !important; width:auto !important;}
+#typo-clear:hover {opacity:1; cursor:pointer;}
