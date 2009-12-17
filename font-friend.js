@@ -6,6 +6,10 @@
  * Licensed under the GPL v2 license
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
+ * Uses some code (c) 2009 Ryan Seddon from
+ * http://labs.thecssninja.com/font_dragr/
+ * Licensed under the MIT license
+ *
 */
 
 var fntfr = {};
