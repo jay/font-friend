@@ -1,5 +1,5 @@
 /*
- * Soma FontFriend 0.9
+ * Soma FontFriend 2.0
  * http://somadesign.ca/projects/fontfriend
  * 
  * Copyright (c) 2009 Matt Wiebe 
