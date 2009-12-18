@@ -178,7 +178,7 @@ if (jQuery('#font-friend').size() == 0 ) {
 
 	jQuery("#typo-font-drop")
 		.bind("dragover", function(event){event.stopPropagation(); event.preventDefault();})
-		.bind("dragenter dragleave", function(event){$(this).toggleClass("dropzone"); event.stopPropagation(); event.preventDefault();})
+		.bind("dragenter dragleave", function(event){jQuery(this).toggleClass("dropzone"); event.stopPropagation(); event.preventDefault();})
 		.bind("drop", fntfr.drop);
 	
 } 
