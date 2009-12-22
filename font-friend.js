@@ -3,8 +3,8 @@
  * http://somadesign.ca/projects/fontfriend
  * 
  * Copyright (c) 2009 Matt Wiebe 
- * Licensed under the GPL v2 license
- * http://www.gnu.org/licenses/gpl-2.0.html
+ * Licensed under the MIT license
+ * http://www.opensource.org/licenses/mit-license.php
  *
  * Uses some code (c) 2009 Ryan Seddon from
  * http://labs.thecssninja.com/font_dragr/
