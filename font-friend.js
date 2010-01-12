@@ -1,5 +1,5 @@
 /*
- * Soma FontFriend 2.0.1
+ * Soma FontFriend 2.1
  * http://somadesign.ca/projects/fontfriend
  * 
  * Copyright (c) 2009 Matt Wiebe 
@@ -14,7 +14,7 @@
 
 var fntfr = {};
 
-fntfr.version = "2.0.1";
+fntfr.version = "2.1";
 
 // style info
 fntfr.css = "#font-friend {overflow:hidden;position: fixed;bottom:0;left:30px;background-color:#fff;background-color:rgba(255,255,255,0.9);color:#222;-moz-box-shadow:1px 1px 5px rgba(0,0,0,.3);-webkit-box-shadow:1px 1px 5px rgba(0,0,0,.3);box-shadow:1px 1px 5px rgba(0,0,0,.3);z-index:10000;text-align:left;height:280px;}#typo-drop {padding:12px 12px 12px 36px;}#typo-toggle {background-color:#222;color:#eee;display:block;width:12px;height:16px;padding:0 1px 0 3px;position:absolute;top:0;left:0;font-size:16px;line-height:1;cursor:pointer;z-index:10001;}#typo-toggle sup {font-size:13px;line-height:13px;vertical-align:super; display:none;}.open #typo-toggle sup {display:inline;}#typo-toggle:hover {color:#fff;background-color:#555;}.open #typo-toggle {width:auto; height:32px; font-size:32px; padding:0 3px;}#typo-drop form {background:none;color:inherit;float:none;}#typo-drop h6 {font-size:13px;border-bottom:1px solid #aaa;line-height:1.5 !important;margin:0 0 6px !important;padding:0 !important;text-indent:0 !important;float:none !important;}#typo-drop > div {float:left;width:120px;padding-right:20px;margin-bottom:12px;}#typo-drop > div.wrap > div {margin-bottom:12px;font-size:11px !important;}#typo-drop div#typo-selector {width:130px;}#typo-drop div#typo-font-family {width:240px;}#typo-selector p {font-size:9px !important;line-height:1.2 !important;margin:1em 0 0 !important;padding:0 !important;}#typo-controls {position:absolute;bottom:60px;left:65px;width:55px !important;height:60px;margin:0 !important;padding:0 !important;}#typo-controls div {position:absolute;font-size:20px;width:1em;height:1em;cursor:pointer;color:#555;min-width:inherit !important;min-height:inherit !important;padding:0;margin:0;float:none;}#typo-controls div:hover {color:#000;}#typo-controls .up {left:1em;top:0;}#typo-controls .down {left:1em;bottom:0;}#typo-controls .left {left:0;top:1em;}#typo-controls .right {right:0;top:1em;}#typo-drop #typo-font-family ul {float:left;width:110px;padding-right:5px;}#typo-drop #typo-font-family ul#typo-font-family-sans {padding-right:10px;width:115px;}#typo-drop ol li {list-style: none outside}#typo-drop ol, #typo-drop ul {margin:0;padding:0;}#typo-drop li {font-size:11px !important;line-height:1.5 !important;margin:0 !important;padding:0 !important;list-style: none outside none !important;text-indent:0 !important;height:auto !important;}#typo-drop li.core {margin-bottom:4px !important;padding:0 !important;}#typo-drop ul li:hover {cursor:pointer;background-color:#e6e6e6 !important;}#typo-drop ul li.family-custom {margin:12px 0 0 !important;}#typo-drop ul li.family-custom:hover {cursor:default;background:none;}#family-custom {width:105px;}#typo-drop ol input[type=radio] {margin-left:-5px;width:auto !important;}#typo-blah {width:100px;margin-left:5px;}#typo-drop ol label {margin-left:5px;display:inline !important;}#typo-credit {position:absolute;bottom:21px;left:32px;font-size:9px;margin:0 !important;}#font-friend a {color:#4C0003 !important;text-decoration:underline !important;border:0 !important;}#font-friend a:hover {color:#A60007 !important;}#typo-clear {position:absolute;bottom:0;right:0;padding:5px 5px 0 !important;text-decoration: line-through;opacity:.1;font-size:21px;margin:0 !important;width:auto !important;}#typo-clear:hover {opacity:1;cursor:pointer;}#typo-font-drop {font-size:11px !important;background-color:#e6e6e6;padding:18px 0;text-align:center;border:1px solid #aaa;margin-bottom:6px;}#typo-font-drop.dropzone {background-color:#fff;border-color:#111;}#typo-drop select option {font-size:10px !important;}}";
@@ -32,7 +32,6 @@ if (jQuery('#font-friend').size() == 0 ) {
 
 	// reuse later
 	var $ff = jQuery("#font-friend");
-	var $ffStyle = jQuery("#font-friend-stylesheet");
 	
 	fntfr.width = $ff.outerWidth();
 	fntfr.height = $ff.outerHeight();
@@ -68,7 +67,7 @@ if (jQuery('#font-friend').size() == 0 ) {
 		if (theSelector == "") {
 			var theSelector = jQuery("#typo-drop ol input:checked").next().attr("value");
 		}
-		console.log(theAttribute + " " + theValue + " " + theSelector);
+		// debug: console.log(theAttribute + " " + theValue + " " + theSelector);
 		// apply that css
 		jQuery(theSelector).css(theAttribute, theValue);
 	});
@@ -127,6 +126,9 @@ if (jQuery('#font-friend').size() == 0 ) {
 	// clear all inline styles -> might crash large pages!
 	jQuery("#typo-clear").click(function() {
 		jQuery("*").removeAttr("style");
+		jQuery("#typo-font-face ul > li").each(function(index) {
+			jQuery(this).css('fontFamily', jQuery(this).text() );
+		});
 	});
 	
 
@@ -168,8 +170,7 @@ if (jQuery('#font-friend').size() == 0 ) {
 	fntfr.buildFontList = function (name, data) {
 		
 		// Get font file and prepend it to stylsheet using @font-face rule
-		fontFaceStyle = "@font-face{font-family: "+name+"; src:url("+data+");} ";
-		$ffStyle.prepend(fontFaceStyle);
+		jQuery("<style type='text/css'>@font-face{font-family: "+name+"; src:url("+data+");}</style> ").appendTo("head");
 		
 		jQuery("#typo-font-face ul").append("<li style='font-family:"+name+"'>"+name+"</li>");
 		
