@@ -1,6 +1,23 @@
 <?php
+$credits = 
+'/*
+ * Soma FontFriend %version%
+ * http://somadesign.ca/projects/fontfriend
+ * 
+ * Copyright (c) 2009 Matt Wiebe 
+ * Licensed under the MIT license
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+ * Uses some code (c) 2009 Ryan Seddon from
+ * http://labs.thecssninja.com/font_dragr/
+ * Licensed under the MIT license
+ *
+*/
+';
 
 $version = '2.2';
+$credits = str_replace('%version%', $version, $credits);
+
 
 $cwd = getcwd();
 $yui = $cwd.'/yuicompressor-2.4.2.jar';
@@ -23,4 +40,12 @@ if ( file_put_contents($fullfile, $js ) ) {
 	
 	passthru("java -jar {$yui} {$fullfile} -o {$targetfile} --charset utf-8", $result);
 	echo ( ! $result) ? "FontFriend {$version} built" : "build fail";
+	
+	$minjs = file_get_contents($targetfile);
+	$minjs = $credits . $minjs;
+	
+	if (file_put_contents($targetfile, $minjs) ) {
+		echo "<br />Credits successfully re-added to minified js";
+	}
+	
 }
