@@ -33,10 +33,12 @@ var fntfr = {
 		fntfr.wfs = ( window.location.href == "http://webfontspecimen.com/demo/" ) ? true : false;
 		fntfr.wfsName = ( fntfr.wfs ) ? $("h1, .bodysize tr:first-child th:first-child") : false;
 		// or, on Soma Web Font Specimen?
-		
 		if ( !fntfr.wfs && $("body").attr("id") == 'soma-web-font-specimen' ) {
 			fntfr.wfs = true;
 			fntfr.wfsName = $("h1, .bodysize tr:first-child th.base");
+		}
+		if ( fntfr.wfs ) {
+			fntfr.wfsOriginalName = $("h1").text();
 		}
 
 		// reuse later
@@ -142,6 +144,8 @@ var fntfr = {
 		$("#typo-clear").click(function() {
 			$("*").removeAttr("style");
 			fntfr.buildFamilies();
+			if ( fntfr.wfs )
+				fntfr.wfsName.text( fntfr.wfsOriginalName );
 		});
 	
 		// add inline font-family styles
