@@ -15,7 +15,7 @@ $credits =
 */
 ';
 
-$version = '2.2';
+$version = '2.3';
 $credits = str_replace('%version%', $version, $credits);
 
 
