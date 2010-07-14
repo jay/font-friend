@@ -20,7 +20,7 @@ var fntfr = {
 	html: '%html%'
 };
 // closurfy it
-(function($){
+(function($, undefined){
 	// check if it's already been added. saves against weirdness if clicked again.
 	if ($('#font-friend').size() == 0 ) {
 	
@@ -39,7 +39,24 @@ var fntfr = {
 		}
 		if ( fntfr.wfs ) {
 			fntfr.wfsOriginalName = $("h1").text();
+			fntfr.wfsTitle = $("title").text();
 		}
+		
+		fntfr.changeFontName = function(name) {
+			// not webfont specimen? leave.
+			if ( ! fntfr.wfs )
+				return false;
+
+			// empty call = reset
+			if ( name == undefined ) {
+				fntfr.wfsName.text(fntfr.wfsOriginalName);
+				$("title").text(fntfr.wfsTitle);
+			}
+			else {
+				fntfr.wfsName.text(name);
+				$("title").text( fntfr.wfsTitle.replace('Font name', name) );
+			}
+		};
 
 		// reuse later
 		var ff = $("#font-friend");
@@ -72,7 +89,7 @@ var fntfr = {
 			// apply that css
 			$(theSelector).css(theAttribute, theValue);
 			if ( theAttribute == 'fontFamily' && fntfr.wfs )
-				fntfr.wfsName.text(theValue);
+				fntfr.changeFontName(theValue);
 		});
 	
 		$("#typo-drop select").change(function() {
@@ -104,7 +121,7 @@ var fntfr = {
 			// apply that custom font
 			$(theSelector).css("fontFamily", theValue);
 			if ( fntfr.wfs )
-				fntfr.wfsName.text(theValue);
+				fntfr.changeFontName(theValue);
 		
 			return false;
 		});
@@ -145,7 +162,7 @@ var fntfr = {
 			$("*").removeAttr("style");
 			fntfr.buildFamilies();
 			if ( fntfr.wfs )
-				fntfr.wfsName.text( fntfr.wfsOriginalName );
+				fntfr.changeFontName(); //empty call resets
 		});
 	
 		// add inline font-family styles
