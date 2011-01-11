@@ -2,7 +2,7 @@
  * Soma FontFriend %version%
  * http://somadesign.ca/projects/fontfriend
  * 
- * Copyright (c) 2009 Matt Wiebe 
+ * Copyright (c) 2009-11 Matt Wiebe 
  * Licensed under the MIT license
  * http://www.opensource.org/licenses/mit-license.php
  *
@@ -17,23 +17,26 @@ var fntfr = {
 	// style info
 	css: "%css%",
 	// inserted html. see font-friend.html for understandable version
-	html: '%html%'
+	html: '%html%',
+	customFamiles: false
 };
+
 // closurfy it
-(function($, undefined){
+(function($, window, undefined){
+
 	// check if it's already been added. saves against weirdness if clicked again.
-	if ($('#font-friend').size() == 0 ) {
-	
+	if ( $('#font-friend').size() === 0 ) {
+		var body = $("body");
 		$("head").append('<style id="font-friend-stylesheet" type="text/css" media="screen">'+fntfr.css+'</style>');
-		$("body").append("<div id='font-friend'></div>");
+		body.append("<div id='font-friend'></div>");
 		$("#font-friend").html(fntfr.html).addClass("open");
-		$("#typo-credit").append("<span> "+fntfr.version+"</span>");
+		$("#ff-credit").append("<span> "+fntfr.version+"</span>");
 		
 		// on Web Font Specimen?
 		fntfr.wfs = ( window.location.href == "http://webfontspecimen.com/demo/" ) ? true : false;
 		fntfr.wfsName = ( fntfr.wfs ) ? $("h1, .bodysize tr:first-child th:first-child") : false;
 		// or, on Soma Web Font Specimen?
-		if ( !fntfr.wfs && $("body").attr("id") == 'soma-web-font-specimen' ) {
+		if ( ! fntfr.wfs && $("body").attr("id") == 'soma-web-font-specimen' ) {
 			fntfr.wfs = true;
 			fntfr.wfsName = $("h1, .bodysize tr:first-child th.base");
 		}
@@ -42,7 +45,69 @@ var fntfr = {
 			fntfr.wfsTitle = $("title").text();
 		}
 		
-		fntfr.changeFontName = function(name) {
+		/**
+		 * We can define a custom family list with the fontFriendFamilies JS array
+		 * or with the data-ff-families attribute on the <body> element (comma separated).
+		 * 
+		 */
+		if ( typeof(fontFriendFamilies) !== 'undefined' ) {
+			fntfr.customFamilies = fontFriendFamilies;
+		}
+		else if ( body.attr("data-ff-families") ) {
+			fntfr.customFamilies = body.attr("data-ff-families").split(',');
+		}
+		
+		function addCustomFontList(list){
+			var ul = $('<ul id="ff-font-family-custom" data-ff="fontFamily" class="ff-hidden"></ul>'),
+			html = "",
+			h6Title = 'Click to toggle between custom &amp; stock font families',
+			toggler = ': <span class="ff-custom">Custom</span> <span class="ff-stock ff-active">Stock</span>';
+			
+			$.each(list, function(index, value){
+				html += "<li>" + value + "</li>";
+			});
+			html = ul.append(html);
+			
+			$("#ff-font-family").append(html);
+			$("#ff-font-family > h6")
+				.addClass('ff-clickable').attr("title", h6Title)
+				.append(toggler)
+				// click handlers for the custom/stock toggler
+				.click(function() {
+					var self = $(this),
+					isCustom = self.hasClass("ff-custom") ? true : false,
+					customList = $("#ff-font-family-custom"),
+					stockList = $("#ff-font-family-sans, #ff-font-family-serif"),
+					isCustom = ! customList.is(":visible"),
+					togglers = self.children(),
+					speed = 100,
+					toHide, toShow;
+					
+					if ( isCustom ) {
+						toHide = stockList;
+						toShow = customList;
+					}
+					else {
+						toHide = customList;
+						toShow = stockList;
+					}
+					
+					togglers.toggleClass('ff-active');
+					
+					toHide.fadeOut(speed, function() {
+						toShow.fadeIn(speed);
+					});
+					
+				});
+			$("#ff-font-family > h6").click();
+		}
+		
+		// Do we have a custom family list?
+		if ( fntfr.customFamilies ) {
+			addCustomFontList(fntfr.customFamilies);
+		}
+		
+		function changeFontName(name) {
 			// not webfont specimen? leave.
 			if ( ! fntfr.wfs )
 				return false;
@@ -56,7 +121,7 @@ var fntfr = {
 				fntfr.wfsName.text(name);
 				$("title").text( fntfr.wfsTitle.replace('Font name', name) );
 			}
-		};
+		}
 
 		// reuse later
 		var ff = $("#font-friend");
@@ -65,7 +130,7 @@ var fntfr = {
 		fntfr.height = ff.outerHeight();
 	
 		// open and close animations
-		$("#typo-toggle").toggle(function() {
+		$("#ff-toggle").toggle(function() {
 			ff.removeClass("open").animate({height:16, width:16},100);
 		}, function() {
 			ff.addClass("open").animate({height:fntfr.height, width:fntfr.width},100);
@@ -73,32 +138,32 @@ var fntfr = {
 
 
 		// the main attraction: change that font
-		$("#typo-drop ul > li").live("click", function() {
+		$("#ff-drop ul > li").live("click", function() {
 			// don't do anything if we clicked on an input inside an li
 			if ( $(this).children("input").length ) {
 				return false;
 			}
 			
 			// set variables
-			var theAttribute = $(this).parent().attr("rel");
+			var theAttribute = $(this).parent().attr("data-ff");
 			var theValue = $(this).text();
-			var theSelector = $("#typo-drop ol input:checked").next().text();
+			var theSelector = $("#ff-drop ol input:checked").next().text();
 			if (theSelector == "") {
-				var theSelector = $("#typo-drop ol input:checked").next().attr("value");
+				var theSelector = $("#ff-drop ol input:checked").next().attr("value");
 			}
 			// apply that css
 			$(theSelector).css(theAttribute, theValue);
 			if ( theAttribute == 'fontFamily' && fntfr.wfs )
-				fntfr.changeFontName(theValue);
+				changeFontName(theValue);
 		});
 	
-		$("#typo-drop select").change(function() {
+		$("#ff-drop select").change(function() {
 			// set variables
-			var theAttribute = $(this).attr("rel");
+			var theAttribute = $(this).attr("data-ff");
 			var theValue = parseFloat( $(this).find("option:selected").val() );
-			var theSelector = $("#typo-drop ol input:checked").next().text();
+			var theSelector = $("#ff-drop ol input:checked").next().text();
 			if (theSelector == "") {
-				var theSelector = $("#typo-drop ol input:checked").next().attr("value");
+				var theSelector = $("#ff-drop ol input:checked").next().attr("value");
 			}
 			// debug: console.log(theAttribute + " " + theValue + " " + theSelector);
 			// apply that css
@@ -106,28 +171,29 @@ var fntfr = {
 		});
 	
 		// unbind the click on the custom font family input (it's in a <li> element)
-		$("#typo-drop li.family-custom").unbind();
+		$("#ff-drop li.family-custom").unbind();
 	
 		// just type and change that custom font
 		$("#family-custom").keyup(function() {
 		
 			// variables
-			var theSelector = $("#typo-drop ol input:checked").next().text();
+			var theValue = $("#family-custom").attr("value"),
+			theSelector = $("#ff-drop ol input:checked").next().text();
 			if (theSelector == "") {
-				var theSelector = $("#typo-drop ol input:checked").next().attr("value");
+				theSelector = $("#ff-drop ol input:checked").next().attr("value");
 			}
-			var theValue = $("#family-custom").attr("value");
+			
 		
 			// apply that custom font
 			$(theSelector).css("fontFamily", theValue);
 			if ( fntfr.wfs )
-				fntfr.changeFontName(theValue);
+				changeFontName(theValue);
 		
 			return false;
 		});
 
 		//move the box around
-		$("#typo-controls div").click(function() {
+		$("#ff-controls div").click(function() {
 			if ($(this).hasClass("left") ) {
 				$("#font-friend").css({left:30, right:"auto"});
 			} 
@@ -143,13 +209,13 @@ var fntfr = {
 		});
 
 		//clearout the text input onclick
-		$("#typo-blah, #family-custom").each(function(index) {
-			$(this).attr('rel', $(this).attr("value") );
+		$("#ff-blah, #family-custom").each(function(index) {
+			$(this).attr('data-ff', $(this).attr("value") );
 		}).click(function() {
 		
 			$(this).prev().attr("checked", "checked");
 		
-			if ($(this).attr("value") == $(this).attr("rel") ) {
+			if ($(this).attr("value") == $(this).attr("data-ff") ) {
 				$(this).removeAttr("value");
 			} else {
 				$(this).select();
@@ -158,23 +224,23 @@ var fntfr = {
 		});
 	
 		// clear all inline styles -> might crash large pages!
-		$("#typo-clear").click(function() {
+		$("#ff-clear").click(function() {
 			$("*").removeAttr("style");
-			fntfr.buildFamilies();
+			buildFamilies();
 			if ( fntfr.wfs )
-				fntfr.changeFontName(); //empty call resets
+				changeFontName(); //empty call resets
 		});
 	
 		// add inline font-family styles
-		fntfr.buildFamilies = function() {
-			$("#typo-font-family li, #typo-font-face li").each(function() {
+		function buildFamilies() {
+			$("#ff-font-family li, #ff-font-face li").each(function() {
 				$(this).css('fontFamily', '"'+$(this).text()+'",monospace' );
 			});
 		};
-		fntfr.buildFamilies();
+		buildFamilies();
 	
 		// drop functions	
-		fntfr.drop = function(event) {
+		function drop(event) {
 		
 			event.stopPropagation();
 			event.preventDefault();
@@ -195,10 +261,10 @@ var fntfr = {
 					droppedFileName = droppedFileName.replace(/\W+/g, "-"); // Replace any non alpha numeric characters with -
 					droppedFontData = files[i].getAsDataURL();
 				
-					fntfr.buildFontList(droppedFileName, droppedFontData);
+					buildFontList(droppedFileName, droppedFontData);
 				
 				
-					$("#typo-font-face ul li:last-child").click();
+					$("#ff-font-face ul li:last-child").click();
 				
 				} else {
 					alert("Invalid file extension. Will only accept ttf, otf, svg or woff font files");
@@ -207,25 +273,25 @@ var fntfr = {
 		
 		};
 	
-		fntfr.buildFontList = function (name, data) {
+		function buildFontList(name, data) {
 		
 			// Get font file and prepend it to stylsheet using @font-face rule
 			$("<style type='text/css'>@font-face{font-family: "+name+"; src:url("+data+");}</style> ").appendTo("head");
 		
-			$("#typo-font-face ul").append("<li style='font-family:"+name+"'>"+name+"</li>");
+			$("#ff-font-face ul").append("<li style='font-family:"+name+"'>"+name+"</li>");
 		
 		};
 	
 		// add event listeners for dropper
 
-		$("#typo-font-drop")
+		$("#ff-font-drop")
 			.bind("dragover", function(event){event.stopPropagation(); event.preventDefault();})
 			.bind("dragenter dragleave", function(event){$(this).toggleClass("dropzone"); event.stopPropagation(); event.preventDefault();})
-			.bind("drop", fntfr.drop);
+			.bind("drop", drop);
 
 	} 
 	else {
 		// if they've clicked on the bookmarklet a second time, assume they want to open it
 		$("#font-friend").animate({height:fntfr.height, width:fntfr.width},100).addClass("open");
 	}
-}(jQuery));
+}(jQuery, window));
