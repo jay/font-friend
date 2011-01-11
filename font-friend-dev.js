@@ -61,7 +61,7 @@ var fntfr = {
 			var ul = $('<ul id="ff-font-family-custom" data-ff="fontFamily" class="ff-hidden"></ul>'),
 			html = "",
 			h6Title = 'Click to toggle between custom &amp; stock font families',
-			toggler = ': <span class="ff-custom">Custom</span> <span class="ff-stock ff-active">Stock</span>';
+			toggler = ': <span class="ff-custom">Custom</span><span class="ff-stock ff-active">Stock</span>';
 			
 			$.each(list, function(index, value){
 				html += "<li>" + value + "</li>";

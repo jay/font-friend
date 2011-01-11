@@ -240,8 +240,14 @@ padding: 0 3px;
 	font-weight:normal !important;
 	color:#111 !important;
 	letter-spacing:.02em;
+	line-height:1;
+	display:inline-block;
 }
 #ff-font-family h6 .ff-active {
 	color:#aaa !important;
 }
-
+#ff-font-family .ff-custom {
+	padding:0 6px;
+	border-right:1px solid #bbb;
+	margin-right:6px;
+}
