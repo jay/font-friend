@@ -1,0 +1,88 @@
+@font-face {
+	font-family: 'OFL Sorts Mill Goudy';
+	src:
+		local('☺'), 
+		url('../fonts/OFLGoudyStM-Italic.woff') format('woff'), 	
+		url('../fonts/OFLGoudyStM-Italic.ttf') format('truetype');
+	font-style:italic;
+	font-weight:normal;
+}
+
+@font-face {
+	font-family: 'OFL Sorts Mill Goudy';
+	src: 
+		local('☺'), 
+		url('../fonts/OFLGoudyStM.woff') format('woff'),
+		url('../fonts/oflgoudystm-webfont.ttf') format('truetype');
+	font-style:normal;
+	font-weight:normal;
+}
+
+@font-face {
+	font-family: 'League Gothic';
+	src: 
+		local('☺'), url('../fonts/League_Gothic.woff') format('woff'),
+		url('../fonts/League_Gothic.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'Crimson';
+	src: local('☺'), url('../fonts/Crimson-Roman-webfont.woff') format('woff'), url('../fonts/Crimson-Roman-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Crimson';
+	src: local('☺'), url('../fonts/Crimson-Bold-webfont.woff') format('woff'), url('../fonts/Crimson-Bold-webfont.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Crimson';
+	src: local('☺'), url('../fonts/Crimson-Italic-webfont.woff') format('woff'), url('../fonts/Crimson-Italic-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'PT Serif';
+	src: local('☺'), url('../fonts/PTF55F-webfont.woff') format('woff'), url('../fonts/PTF55F-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'PT Serif';
+	src: local('☺'), url('../fonts/PTF56F-webfont.woff') format('woff'), url('../fonts/PTF56F-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'PT Serif';
+	src: local('☺'), url('../fonts/PTF75F-webfont.woff') format('woff'), url('../fonts/PTF75F-webfont.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Tinos';
+	src: local('☺'), url('../fonts/Tinos-Italic-Latin-webfont.woff') format('woff'), url('../fonts/Tinos-Italic-Latin-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Tinos';
+	src: local('☺'), url('../fonts/Tinos-Bold-Latin-webfont.woff') format('woff'), url('../fonts/Tinos-Bold-Latin-webfont.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Tinos';
+	src: local('☺'), url('../fonts/Tinos-Regular-Latin-webfont.woff') format('woff'), url('../fonts/Tinos-Regular-Latin-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
