@@ -53,8 +53,6 @@
 		
 		// check if it's already been added. saves against weirdness if clicked again.
 		if ( $('#font-friend').size() !== 0 ) {
-			// if they've clicked on the bookmarklet a second time, assume they want to open it
-			$("#font-friend").animate({height:fontFriend.height, width:fontFriend.width},100).addClass("open");
 			return false;
 		}
 		
