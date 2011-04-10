@@ -68,6 +68,36 @@
 		buildFamilies();
 		webfontSpecimenCheck();
 		maybeAddTypekit();
+		populateDeclaredFontFaceRules();
+	}
+	
+	function populateDeclaredFontFaceRules() {
+		var css = document.styleSheets || [],
+		fontFaceRuleType = CSSRule.FONT_FACE_RULE,
+		fontFamilies = [];
+
+		$.each( css, function(i,val){
+			// try/catch because xdomain security prevents me from reading external stylesheets
+			try {
+				$.each( val.cssRules, function(index,value) {
+					if ( value.type == fontFaceRuleType ) {
+						var fontFamily = value.style.getPropertyValue('font-family');
+						if ( fontFamily && fontFamily !== "testfont" ) { // Modernizr uses testfont
+							// Firefox adds quotes to font name;
+							fontFamily = fontFamily.replace(/^"/, "").replace(/"$/, ""); 
+							fontFamilies.push(fontFamily);
+						}
+					}
+				} );
+			}
+			catch(e) {
+				// security prevents us from accessing other-domain stylesheets
+			}
+		} );
+		
+		if ( fontFamilies.length > 0 ) {
+			addCustomFontList(arrayUnique(fontFamilies));
+		}
 	}
 	
 	function customFamilyDefinitionsCheck() {
@@ -269,6 +299,15 @@
 		reader.readAsDataURL(file);
 	}
 	
+	function fontNameCleaner(name) {
+		return name
+			.replace(/\..+$/,"") // Removes file extension from name
+			.replace(/\W+/, "-").replace(/-|_/, " ") // Replace any non alpha numeric characters with a space.
+			.replace(/^([a-z])|\s+([a-z])/g, function (word) {
+				return word.toUpperCase();
+			}); // uppercase it
+	}
+	
 	// drop functions	
 	function handleDrop(event) {
 
@@ -285,12 +324,7 @@
 				droppedFileName;
 	
 			if(droppedFullFileName.match(acceptedFileExtensions)) {
-				droppedFileName = 
-					droppedFullFileName.replace(/\..+$/,"") // Removes file extension from name
-					.replace(/\W+/, "-").replace(/-|_/, " ") // Replace any non alpha numeric characters with a space.
-					.replace(/^([a-z])|\s+([a-z])/g, function (word) {
-						return word.toUpperCase();
-					}); // uppercase it
+				droppedFileName = fontNameCleaner(droppedFileName);
 				processData(file, droppedFileName);
 		
 			} else {
@@ -321,6 +355,33 @@
 	function preventActions(event) {
 		event.stopPropagation();
 		event.preventDefault();
+	}
+	
+	function arrayUnique(inputArr) {
+		// Removes duplicate values from array  
+		// discuss at: http://phpjs.org/functions/array_unique 
+		var key = '', 
+			tmp_arr2 = {},
+			val = '';
+
+		var __array_search = function (needle, haystack) {
+			var fkey = '';	for (fkey in haystack) {
+				if (haystack.hasOwnProperty(fkey)) {
+					if ((haystack[fkey] + '') === (needle + '')) {
+						return fkey;
+					}			}
+			}
+			return false;
+		};
+		 for (key in inputArr) {
+			if (inputArr.hasOwnProperty(key)) {
+				val = inputArr[key];
+				if (false === __array_search(val, tmp_arr2)) {
+					tmp_arr2[key] = val;}
+			}
+		}
+
+		return tmp_arr2;
 	}
 	
 	function addBehaviours() {
