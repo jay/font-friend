@@ -12,19 +12,13 @@
  *
 */
 
-
-
 // closurfy it
-(function($, window, undef){
+(function(window, document){
 
-	// check if it's already been added. saves against weirdness if clicked again.
-	if ( $('#font-friend').size() !== 0 ) {
-		// if they've clicked on the bookmarklet a second time, assume they want to open it
-		$("#font-friend").animate({height:fontFriend.height, width:fontFriend.width},100).addClass("open");
-		return false;
-	}
 	// moving along
-	var fontFriend = {
+	var $, body, jqInterval,
+	undef = 'undefined',
+	fontFriend = {
 		version: "%version%",
 		// style info
 		css: "%css%",
@@ -32,48 +26,113 @@
 		html: '%html%',
 		customFamiles: false,
 		customFamilyMap: []
-	},
-	body = $("body");
-
-	$("head").append('<style id="font-friend-stylesheet" type="text/css" media="screen">'+fontFriend.css+'</style>');
-	body.append("<div id='font-friend'></div>");
-	$("#font-friend").html(fontFriend.html).addClass("open");
-	$("#ff-credit").append("<span> "+fontFriend.version+"</span>");
-
-	// on Web Font Specimen?
-	fontFriend.wfs = ( window.location.href == "http://webfontspecimen.com/demo/" ) ? true : false;
-	fontFriend.wfsName = ( fontFriend.wfs ) ? $("h1, .bodysize tr:first-child th:first-child") : false;
-	// or, on Soma Web Font Specimen?
-	if ( ! fontFriend.wfs && $("body").attr("id") == 'soma-web-font-specimen' ) {
-		fontFriend.wfs = true;
-		fontFriend.wfsName = $("h1, .bodysize tr:first-child th.base");
-	}
-	if ( fontFriend.wfs ) {
-		fontFriend.wfsOriginalName = $("h1").text();
-		fontFriend.wfsTitle = $("title").text();
-	}
-
-	/**
-	 * We can define a custom family list with the fontFriendFamilies JS array/object
-	 * or with the data-ff-families attribute on the <body> element (comma separated).
-	 * 
-	 */
-	if ( typeof(fontFriendFamilies) !== 'undefined' ) {
-		fontFriend.customFamilies = fontFriendFamilies;
-		// not an array. It must be an object
-		if ( ! $.isArray(fontFriend.customFamilies)) {
-			var fffTemp = [];
-			$.each( fontFriend.customFamilies, function(index, value) {
-				fffTemp.push(index);
-			});
-			fontFriend.customFamilies = fffTemp;
-			fontFriend.customFamilyMap = fontFriendFamilies;
+	};
+	
+	function maybeInit() {
+		if ( typeof(window.jQuery) === undef ) {
+			var jq = document.createElement("script");
+			jq.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js';
+			document.getElementsByTagName('head')[0].appendChild(jq);
+			jqInterval = setInterval(jqCheck, 100);
+		}
+		else {
+			init();
 		}
 	}
-	else if ( body.attr("data-ff-families") ) {
-		fontFriend.customFamilies = body.attr("data-ff-families").split(',');
+	maybeInit();
+	
+	function jqCheck() {
+		if ( typeof(window.jQuery) !== undef ) {
+			clearInterval(jqInterval);
+			init();
+		}
+	}
+	
+	function init() {
+		$ = window.jQuery;
+		
+		// check if it's already been added. saves against weirdness if clicked again.
+		if ( $('#font-friend').size() !== 0 ) {
+			// if they've clicked on the bookmarklet a second time, assume they want to open it
+			$("#font-friend").animate({height:fontFriend.height, width:fontFriend.width},100).addClass("open");
+			return false;
+		}
+		
+		body = $("body");
+		$("head").append('<style id="font-friend-stylesheet" type="text/css" media="screen">'+fontFriend.css+'</style>');
+		body.append("<div id='font-friend'></div>");
+		$("#font-friend").html(fontFriend.html).addClass("open");
+		$("#ff-credit").append("<span> "+fontFriend.version+"</span>");
+		
+		addBehaviours();
+		customFamilyDefinitionsCheck();
+		addIncrementors();
+		buildFamilies();
+		webfontSpecimenCheck();
+		maybeAddTypekit();
+	}
+	
+	function customFamilyDefinitionsCheck() {
+		/**
+		 * We can define a custom family list with the fontFriendFamilies JS array/object
+		 * or with the data-ff-families attribute on the <body> element (comma separated).
+		 * 
+		 */
+		if ( typeof(fontFriendFamilies) !== undef ) {
+			fontFriend.customFamilies = fontFriendFamilies;
+			// not an array. It must be an object
+			if ( ! $.isArray(fontFriend.customFamilies)) {
+				var fffTemp = [];
+				$.each( fontFriend.customFamilies, function(index, value) {
+					fffTemp.push(index);
+				});
+				fontFriend.customFamilies = fffTemp;
+				fontFriend.customFamilyMap = fontFriendFamilies;
+			}
+		}
+		else if ( body.attr("data-ff-families") ) {
+			fontFriend.customFamilies = body.attr("data-ff-families").split(',');
+		}
+	}
+	
+	function webfontSpecimenCheck() {
+		// on Web Font Specimen?
+		fontFriend.wfs = ( window.location.href == "http://webfontspecimen.com/demo/" );
+		fontFriend.wfsName = ( fontFriend.wfs ) ? $("h1, .bodysize tr:first-child th:first-child") : false;
+		// or, on Soma Web Font Specimen?
+		if ( ! fontFriend.wfs && $("body").attr("id") == 'soma-web-font-specimen' ) {
+			fontFriend.wfs = true;
+			fontFriend.wfsName = $("h1, .bodysize tr:first-child th.base");
+		}
+		if ( fontFriend.wfs ) {
+			fontFriend.wfsOriginalName = $("h1").text();
+			fontFriend.wfsTitle = $("title").text();
+		}
 	}
 
+	function addIncrementors() {
+		$("#font-friend").find("select").each(function(index) {
+			var html = $('<span class="ff-toggler"><span class="ff-up" title="Increase">&#9650;</span><span class="ff-down" title="Decrease">&#9660;</span></span>');
+			html.insertBefore(this);
+		});
+		$(".ff-toggler span").click(incrementDropdown);
+	}
+	
+	function incrementDropdown(event) {
+		var self = $(this),
+		increase = event.target.className == 'ff-up',
+		dropdown = self.parent().next(),
+		current = dropdown.find(":selected"),
+		changeTo;
+		
+		changeTo = ( increase ) ? current.next() : current.prev();
+		if ( changeTo.size() == 0 ) {
+			changeTo = ( increase ) ? dropdown.find(":first") : dropdown.find(":last");
+		}
+		changeTo.attr("selected", "selected");
+		dropdown.trigger("change");
+	}
+	
 	// Searches the html page for a script loaded from use.typekit.
 	// Returns the kit ID as a string.
 	function findKitId(){
@@ -103,12 +162,10 @@
 				fontList.push(family.name);
 			});
 			addCustomFontList(fontList);
-			buildFamilies();
 			$("#ff-font-family h6").addClass("typekit-badge");
 		}
 	});
 	}
-	maybeAddTypekit();
 
 	function addCustomFontList(list){
 		var existingUl = $("#ff-font-family-custom"),
@@ -123,7 +180,8 @@
 
 		// exit early if we already have a list
 		if ( existingUl.size() === 1 ) {
-			return existingUl.append(html);
+			existingUl.append(html);
+			return buildFamilies();
 		}
 	
 		html = ul.append(html);
@@ -159,6 +217,7 @@
 				});
 			
 			});
+		buildFamilies();
 		$("#ff-font-family > h6").click();
 	}
 
@@ -173,7 +232,7 @@
 			return false;
 
 		// empty call = reset
-		if ( name == undef ) {
+		if ( ! name ) {
 			fontFriend.wfsName.text(fontFriend.wfsOriginalName);
 			$("title").text(fontFriend.wfsTitle);
 		}
@@ -181,138 +240,25 @@
 			fontFriend.wfsName.text(name);
 			$("title").text( fontFriend.wfsTitle.replace('Font name', name) );
 		}
-	}
-
-	// reuse later
-	var ff = $("#font-friend");
-
-	fontFriend.width = ff.outerWidth();
-	fontFriend.height = ff.outerHeight();
-
-	// open and close animations
-	$("#ff-toggle").toggle(function() {
-		ff.removeClass("open").animate({height:16, width:16},100);
-	}, function() {
-		ff.addClass("open").animate({height:fontFriend.height, width:fontFriend.width},100);
-	});
+	}	
+	
 
 	function maybeFontStack(fontFamily) {
 		// is it in our map?
-		if ( fontFriend.customFamilyMap[fontFamily] !== undef ) {
+		if ( typeof(fontFriend.customFamilyMap[fontFamily]) !== undef ) {
 			fontFamily = fontFriend.customFamilyMap[fontFamily];
 		}
 		// add monospace as a fallback in the stack
 		return fontFamily + ",monospace";
 	}
 
-	// the main attraction: change that font
-	$("#ff-drop ul > li").live("click", function() {
-		// don't do anything if we clicked on an input inside an li
-		if ( $(this).children("input").length ) {
-			return false;
-		}
-	
-		// set variables
-		var self = $(this),
-		theAttribute = self.parent().attr("data-ff"),
-		theValue = self.text(),
-		theSelector = $("#ff-drop ol input:checked").next().text();
-		if (theSelector == "") {
-			theSelector = $("#ff-drop ol input:checked").next().attr("value");
-		}
-	
-		// font-family-specific
-		if ( theAttribute == 'fontFamily' ) {
-			changeFontName(theValue);
-			theValue = maybeFontStack(theValue);
-		}
-
-		// apply that css
-		$(theSelector).css(theAttribute, theValue);
-
-	});
-
-	$("#ff-drop select").change(function() {
-		// set variables
-		var theAttribute = $(this).attr("data-ff"),
-		theValue = parseFloat( $(this).find("option:selected").val() ),
-		theSelector = $("#ff-drop ol input:checked").next().text();
-		if (theSelector == "") {
-			theSelector = $("#ff-drop ol input:checked").next().attr("value");
-		}
-		// debug: console.log(theAttribute + " " + theValue + " " + theSelector);
-		// apply that css
-		$(theSelector).css(theAttribute, theValue);
-	});
-
-	// unbind the click on the custom font family input (it's in a <li> element)
-	$("#ff-drop li.family-custom").unbind();
-
-	// just type and change that custom font
-	$("#family-custom").keyup(function() {
-
-		// variables
-		var theValue = $("#family-custom").attr("value"),
-		theSelector = $("#ff-drop ol input:checked").next().text();
-		if (theSelector == "") {
-			theSelector = $("#ff-drop ol input:checked").next().attr("value");
-		}
-	
-
-		// apply that custom font
-		$(theSelector).css("fontFamily", theValue);
-		changeFontName(theValue);
-
-		return false;
-	});
-
-	//move the box around
-	$("#ff-controls div").click(function() {
-		if ($(this).hasClass("left") ) {
-			$("#font-friend").css({left:30, right:"auto"});
-		} 
-		if ($(this).hasClass("right") ) {
-				$("#font-friend").css({right:30, left:"auto"});
-		}
-		if ($(this).hasClass("up") ) {
-			$("#font-friend").css({top:0, bottom:"auto"});
-		}
-		if ($(this).hasClass("down") ) {
-			$("#font-friend").css({bottom:0, top:"auto"});
-		}
-	});
-
-	//clearout the text input onclick
-	$("#ff-blah, #family-custom").each(function(index) {
-		$(this).attr('data-ff', $(this).attr("value") );
-	}).click(function() {
-
-		$(this).prev().attr("checked", "checked");
-
-		if ($(this).attr("value") == $(this).attr("data-ff") ) {
-			$(this).removeAttr("value");
-		} else {
-			$(this).select();
-		}
-
-	});
-
-	// clear all inline styles -> might crash large pages!
-	$("#ff-clear").click(function() {
-		$("*").not("[data-ff=fontFamily]").removeAttr("style");
-		buildFamilies();
-		if ( fontFriend.wfs )
-			changeFontName(); //empty call resets
-	});
-
 	// add inline font-family styles
 	function buildFamilies() {
 		$("#ff-font-family li, #ff-font-face li").each(function() {
 			var self = $(this);
-			self.css('fontFamily', maybeFontStack(self.text()) );
+			self.css('fontFamily', maybeFontStack(self.text()));
 		});
 	}
-	buildFamilies();
 	
 	function processData(file, name) {
 		var reader = new FileReader();
@@ -371,7 +317,6 @@
 		// Get font file and prepend it to stylsheet using @font-face rule
 		$("<style type='text/css'>@font-face{font-family: "+name+"; src:url("+data+");}</style> ").appendTo("head");
 		addCustomFontList([name]);
-		buildFamilies();
 		$("#ff-font-family-custom").find("li:last").click();
 	};
 	
@@ -379,11 +324,138 @@
 		event.stopPropagation();
 		event.preventDefault();
 	}
+	
+	function addBehaviours() {
+		// reuse later
+		var ff = $("#font-friend");
 
-	// add event listeners for dropper
-	$("#ff-font-drop")
-		.bind("dragover", preventActions)
-		.bind("dragenter dragleave", function(event){$(this).toggleClass("dropzone"); preventActions(event); })
-		.bind("drop", handleDrop);
+		fontFriend.width = ff.outerWidth();
+		fontFriend.height = ff.outerHeight();
 
-}(jQuery, window));
+		// open and close animations
+		$("#ff-toggle").toggle(function() {
+			ff.removeClass("open").animate({height:16, width:16},100);
+		}, function() {
+			ff.addClass("open").animate({height:fontFriend.height, width:fontFriend.width},100);
+		});
+		
+		// the main attraction: change that font
+		$("#ff-drop ul > li").live("click", function() {
+			// don't do anything if we clicked on an input inside an li
+			if ( $(this).children("input").length ) {
+				return false;
+			}
+
+			// set variables
+			var self = $(this),
+			theAttribute = self.parent().attr("data-ff"),
+			theValue = self.text(),
+			theSelector = $("#ff-drop ol input:checked").next().text();
+			if (theSelector == "") {
+				theSelector = $("#ff-drop ol input:checked").next().attr("value");
+			}
+
+			// font-family-specific
+			if ( theAttribute == 'fontFamily' ) {
+				changeFontName(theValue);
+				theValue = maybeFontStack(theValue);
+			}
+
+			// apply that css
+			$(theSelector).css(theAttribute, theValue);
+
+		});
+		
+		$("#ff-drop select").change(function() {
+			// set variables
+			var theAttribute = $(this).attr("data-ff"),
+			theValue = parseFloat( $(this).find("option:selected").val() ),
+			theSelector = $("#ff-drop ol input:checked").next().text();
+			if (theSelector == "") {
+				theSelector = $("#ff-drop ol input:checked").next().attr("value");
+			}
+			// debug: console.log(theAttribute + " " + theValue + " " + theSelector);
+			// apply that css
+			$(theSelector).css(theAttribute, theValue);
+		});
+
+		// unbind the click on the custom font family input (it's in a <li> element)
+		$("#ff-drop li.family-custom").unbind();
+
+		// just type and change that custom font
+		$("#family-custom").keyup(function(event) {
+
+			// variables
+			var theValue = $("#family-custom").attr("value"),
+			theSelector = $("#ff-drop ol input:checked").next().text();
+			if (theSelector == "") {
+				theSelector = $("#ff-drop ol input:checked").next().attr("value");
+			}
+
+			if ( event.keyCode == 13 ) { // did we hit enter?
+				$("#family-custom-add").click();
+			}
+			else {
+				// apply that custom font
+				$(theSelector).css("fontFamily", theValue);
+				changeFontName(theValue);
+			}
+
+			preventActions(event);
+		});
+		
+		//move the box around
+		$("#ff-controls div").click(function() {
+			if ($(this).hasClass("left") ) {
+				$("#font-friend").css({left:30, right:"auto"});
+			} 
+			if ($(this).hasClass("right") ) {
+					$("#font-friend").css({right:30, left:"auto"});
+			}
+			if ($(this).hasClass("up") ) {
+				$("#font-friend").css({top:0, bottom:"auto"});
+			}
+			if ($(this).hasClass("down") ) {
+				$("#font-friend").css({bottom:0, top:"auto"});
+			}
+		});
+
+		//clearout the text input onclick
+		$("#ff-blah, #family-custom").each(function(index) {
+			$(this).attr('data-ff', $(this).attr("value") );
+		}).click(function() {
+
+			$(this).prev().attr("checked", "checked");
+
+			if ($(this).attr("value") == $(this).attr("data-ff") ) {
+				$(this).removeAttr("value");
+			} else {
+				$(this).select();
+			}
+
+		});
+
+		// clear all inline styles -> might crash large pages!
+		$("#ff-clear").click(function() {
+			$("*").not("[data-ff=fontFamily]").removeAttr("style");
+			buildFamilies();
+			changeFontName(); //empty call resets
+		});
+		
+		$("#family-custom-add").click(function() {
+			var input = $(this).prev(),
+			fontName = input.val();
+			if (fontName !== "your font family" && fontName !== "") {
+				addCustomFontList([fontName]);
+				input.val("").select();
+			}
+		});
+		
+		// add event listeners for dropper
+		$("#ff-font-drop")
+			.bind("dragover", preventActions)
+			.bind("dragenter dragleave", function(event){$(this).toggleClass("dropzone"); preventActions(event); })
+			.bind("drop", handleDrop);
+	}
+
+}(this, this.document));

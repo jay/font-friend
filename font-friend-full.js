@@ -12,68 +12,127 @@
  *
 */
 
-
-
 // closurfy it
-(function($, window, undef){
+(function(window, document){
 
-	// check if it's already been added. saves against weirdness if clicked again.
-	if ( $('#font-friend').size() !== 0 ) {
-		// if they've clicked on the bookmarklet a second time, assume they want to open it
-		$("#font-friend").animate({height:fontFriend.height, width:fontFriend.width},100).addClass("open");
-		return false;
-	}
 	// moving along
-	var fontFriend = {
+	var $, body, jqInterval,
+	undef = 'undefined',
+	fontFriend = {
 		version: "3.0",
 		// style info
-		css: "#font-friend{overflow:hidden;position:fixed;bottom:0;left:30px;background-color:#fff;background-color:rgba(255,255,255,0.93);width:740px;color:#222;-moz-box-shadow:1px 1px 5px rgba(0,0,0,.3);-webkit-box-shadow:1px 1px 5px rgba(0,0,0,.3);box-shadow:1px 1px 5px rgba(0,0,0,.3);z-index:10000;text-align:left;height:280px}#ff-drop{padding:12px 12px 12px 36px}#ff-toggle{background-color:#222;color:#eee;display:block;width:12px;height:16px;padding:0 1px 0 3px;position:absolute;top:0;left:0;font-size:16px;line-height:1;cursor:pointer;z-index:10001}#ff-toggle sup{font-size:13px;line-height:13px;vertical-align:super;display:none}.open #ff-toggle sup{display:inline}#ff-toggle:hover{color:#fff;background-color:#555}.open #ff-toggle{width:auto;height:32px;font-size:32px;padding:0 3px}#ff-drop form{background:0;color:inherit;float:none}#ff-drop h6{font-size:13px;border-bottom:1px solid #aaa;line-height:1.5!important;margin:0 0 6px!important;padding:0!important;text-indent:0!important;float:none!important}#ff-drop>div{float:left;width:120px;padding-right:20px;margin-bottom:12px}#ff-drop>div.wrap>div{margin-bottom:12px;font-size:11px!important}#ff-drop div#ff-selector{width:130px}#ff-drop div#ff-font-family{width:240px}#ff-selector p{font-size:9px!important;line-height:1.2!important;margin:1em 0 0!important;padding:0!important}#ff-controls{position:absolute;bottom:60px;left:65px;width:55px!important;height:60px;margin:0!important;padding:0!important}#ff-controls div{position:absolute;font-size:20px;width:1em;height:1em;cursor:pointer;color:#555;min-width:inherit!important;min-height:inherit!important;padding:0;margin:0;float:none}#ff-controls div:hover{color:#000}#ff-controls .up{left:1em;top:0}#ff-controls .down{left:1em;bottom:0}#ff-controls .left{left:0;top:1em}#ff-controls .right{right:0;top:1em}#ff-drop #ff-font-family ul{float:left;width:110px;padding-right:5px}#ff-drop #ff-font-family ul#ff-font-family-sans{padding-right:10px;width:115px}#ff-drop ol li{list-style:none outside}#ff-drop ol,#ff-drop ul{margin:0;padding:0}#ff-drop li{font-size:11px!important;line-height:1.5!important;margin:0!important;padding:0!important;list-style:none outside none!important;text-indent:0!important;height:auto!important}#ff-drop li.core{margin-bottom:4px!important;padding:0!important}#ff-drop ul li:hover{cursor:pointer;background-color:#e6e6e6!important}#ff-drop ul li.family-custom{margin:12px 0 0!important}#ff-drop ul li.family-custom:hover{cursor:default;background:0}#family-custom{width:105px}#ff-drop ol input[type=radio]{margin-left:-5px;width:auto!important}#ff-blah{width:100px;margin-left:5px}#ff-drop ol label{margin-left:5px;display:inline!important}#ff-credit{position:absolute;bottom:21px;left:32px;font-size:9px;margin:0!important}#font-friend a{color:#4c0003!important;text-decoration:underline!important;border:0!important}#font-friend a:hover{color:#a60007!important}#ff-clear{position:absolute;bottom:0;right:0;padding:5px 5px 0!important;text-decoration:line-through;opacity:.1;font-size:21px;margin:0!important;width:auto!important}#ff-clear:hover{opacity:1;cursor:pointer}#ff-font-drop{font-size:11px!important;background-color:#e6e6e6;padding:18px 0;text-align:center;border:1px solid #aaa;margin-bottom:6px}#ff-font-drop.dropzone{background-color:#fff;border-color:#111}#ff-drop select{width:98.5%!important}#ff-drop select option{font-size:10px!important}#ff-drop .ff-hidden{display:none}#ff-drop .ff-clickable{cursor:pointer}#ff-font-family h6 span{text-transform:uppercase!important;font-size:75%;font-weight:normal!important;color:#111!important;letter-spacing:.02em;line-height:1;display:inline-block}#ff-font-family h6 .ff-active{color:#aaa!important}#ff-font-family .ff-custom{padding:0 6px;border-right:1px solid #bbb;margin-right:6px}#ff-font-family h6.typekit-badge{background:url(http://typekit.com/favicon.ico) no-repeat center right}#ff-drop #ff-font-family #ff-font-family-custom{width:100%;-webkit-column-count:2;-moz-column-count:2;column-count:2;-webkit-column-gap:12px;-moz-column-gap:12px;column-gap:12px}",
+		css: "#font-friend{overflow:hidden;position:fixed;bottom:0;left:30px;background-color:#fff;background-color:rgba(255,255,255,0.93);width:740px;color:#222;-moz-box-shadow:1px 1px 5px rgba(0,0,0,.3);-webkit-box-shadow:1px 1px 5px rgba(0,0,0,.3);box-shadow:1px 1px 5px rgba(0,0,0,.3);z-index:10000;text-align:left;height:280px}#font-friend,#ff-drop h6,#ff-drop li{line-height:1.5!important}#ff-drop{padding:12px 12px 12px 36px}#ff-toggle{background-color:#222;color:#eee;display:block;width:12px;height:16px;padding:0 1px 0 3px;position:absolute;top:0;left:0;font-size:16px;line-height:1!important;cursor:pointer;z-index:10001}#ff-toggle sup{font-size:13px;line-height:1!important;vertical-align:super;display:none}.open #ff-toggle sup{display:inline}#ff-toggle:hover{color:#fff;background-color:#555}.open #ff-toggle{width:auto;height:32px;font-size:32px;padding:0 3px}#ff-drop form{background:0;color:inherit;float:none}#ff-drop h6{font-size:13px;border-bottom:1px solid #aaa;margin:0 0 6px!important;padding:0!important;text-indent:0!important;float:none!important}#ff-drop>div{float:left;width:120px;padding-right:20px;margin-bottom:12px}#ff-drop>div.wrap>div{margin-bottom:12px;font-size:11px!important;position:relative}#ff-drop div#ff-selector{width:130px}#ff-drop div#ff-font-family{width:240px}#ff-selector p{font-size:9px!important;line-height:1.2!important;margin:1em 0 0!important;padding:0!important}#ff-controls{position:absolute;bottom:60px;left:65px;width:55px!important;height:60px;margin:0!important;padding:0!important}#ff-controls div{position:absolute;font-size:20px;width:1em;height:1em;color:#555;min-width:inherit!important;min-height:inherit!important;padding:0;margin:0;float:none;text-align:center}#ff-controls>div,.ff-toggler>span,#family-custom-add{font-family:sans-serif!important;font-weight:normal!important;-webkit-user-select:none;-moz-user-select:none;user-select:none;cursor:pointer}#ff-controls div:hover{color:#000}#ff-controls .up{left:1em;top:0}#ff-controls .down{left:1em;bottom:0}#ff-controls .left{left:0;top:1em}#ff-controls .right{right:-.25em;top:1em}#ff-drop #ff-font-family ul{float:left;width:110px;padding-right:5px}#ff-drop #ff-font-family ul#ff-font-family-sans{padding-right:10px;width:115px}#ff-drop ol li{list-style:none outside}#ff-drop ol,#ff-drop ul{margin:0;padding:0}#ff-drop li{font-size:11px!important;\ margin:0!important;padding:0!important;list-style:none outside none!important;text-indent:0!important;height:auto!important}#ff-drop li.core{margin-bottom:4px!important;padding:0!important}#ff-drop ul li:hover{cursor:pointer;background-color:#e6e6e6!important}#ff-drop ul li.family-custom{margin:12px 0 0!important}#ff-drop ul li.family-custom:hover{cursor:default;background:none!important}#family-custom-add{display:inline-block;color:#aaa;line-height:1!important;font-size:15px!important;color:#666!important;vertical-align:top;padding:1px 3px 3px}#family-custom-add:hover,#family-custom-add:focus{background-color:#555!important;color:#fff!important}#family-custom{width:85px}#ff-drop ol input[type=radio]{margin-left:-5px;width:auto!important}#ff-blah{width:100px;margin-left:5px}#ff-drop ol label{margin-left:5px;display:inline!important}#ff-credit{position:absolute;bottom:21px;left:32px;font-size:9px;margin:0!important}#font-friend a{color:#4c0003!important;text-decoration:underline!important;border:0!important}#font-friend a:hover{color:#a60007!important}#ff-clear{position:absolute;bottom:0;right:0;padding:5px 5px 0!important;text-decoration:line-through;opacity:.1;font-size:21px;margin:0!important;width:auto!important}#ff-clear:hover{opacity:1;cursor:pointer}#ff-font-drop{font-size:11px!important;background-color:#e6e6e6;padding:15px 0;text-align:center;border:1px solid #aaa;margin-bottom:6px}#ff-font-drop.dropzone{background-color:#fff;border-color:#111}#ff-drop select{width:105px!important;margin-left:15px!important}#ff-drop select option{font-size:10px!important}#ff-drop .ff-hidden{display:none}#ff-drop .ff-clickable{cursor:pointer}#ff-font-family h6 span{text-transform:uppercase!important;font-size:75%;font-weight:normal!important;color:#111!important;letter-spacing:.02em;line-height:1;display:inline-block}#ff-font-family h6 .ff-active{color:#aaa!important}#ff-font-family .ff-custom{padding:0 6px;border-right:1px solid #bbb;margin-right:6px}#ff-font-family h6.typekit-badge{background:url(http://typekit.com/favicon.ico) no-repeat center right}#ff-drop #ff-font-family #ff-font-family-custom{width:100%;-webkit-column-count:2;-moz-column-count:2;column-count:2;-webkit-column-gap:12px;-moz-column-gap:12px;column-gap:12px}.ff-toggler{position:absolute;height:20px;top:27px;left:-4px}.ff-toggler span{position:absolute;display:block;left:0;top:0;height:8px;width:8px;line-height:1!important;font-size:8px!important;text-align:center;color:#aaa!important;padding:2px 4px!important}.ff-toggler span:hover{color:#333!important}.ff-toggler span.ff-down{top:auto;bottom:0}#ff-drop [data-ff=fontFamily] li{height:1.5em!important;overflow:hidden;text-overflow:ellipsis}",
 		// inserted html. see font-friend.html for understandable version
-		html: '<div id="ff-drop"><span id="ff-toggle">F<sup>2</sup></span><div id="ff-selector"><h6>Selector</h6><form action="" method="get"><ol><li><input type="radio" name="jq-select" checked="checked" id="jq1"><label for="jq1">body</label></li><li><input type="radio" name="jq-select" id="jq2"><label for="jq2">h1,h2,h3,h4,h5,h6</label></li><li><input type="radio" name="jq-select" id="jq3"><label for="jq3">p</label></li><li><input type="radio" name="jq-select" id="jq4"><input type="text" name="ff-blah" value="roll your own" id="ff-blah"></li></ol></form><p>Roll your own selector using <a href="http://docs.jquery.com/Selectors">jQuery selectors</a>.</p></div><div id="ff-font-family"><h6>Font Family</h6><ul id="ff-font-family-sans" data-ff="fontFamily"><li>Arial</li><li>Verdana</li><li>Tahoma</li><li class="core">Trebuchet MS</li><li>Helvetica</li><li>Helvetica Neue</li><li>Gill Sans</li><li>Century Gothic</li><li>Lucida Grande</li><li>Lucida Sans Unicode</li><li>Calibri</li><li>Corbel</li><li>Candara</li></ul><ul id="ff-font-family-serif" data-ff="fontFamily"><li>Times New Roman</li><li class="core">Georgia</li><li>Times</li><li>Palatino</li><li>Palatino Linotype</li><li>Baskerville</li><li>Hoefler Text</li><li>Garamond</li><li>Constantia</li><li>Cambria</li><li class="family-custom"><input type="text" name="family-custom" value="your font family" id="family-custom"></li></ul></div><div class="wrap"><div id="ff-font-size"><h6>Font Size</h6><select data-ff="fontSize"><option>10</option><option>11</option><option>12</option><option>14</option><option>16</option><option>18</option><option>21</option><option>24</option><option>36</option><option>48</option><option>60</option><option>72</option></select></div><div id="ff-font-weight"><h6>Font Weight</h6><select data-ff="fontWeight"><option>100</option><option>200</option><option>300</option><option value="400" selected="selected">400 (normal)</option><option>500</option><option>600</option><option value="700">700 (bold)</option><option>800</option><option>900</option></select></div><div id="ff-line-height"><h6>Line Height</h6><select data-ff="lineHeight"><option>1</option><option>1.1</option><option>1.2</option><option>1.3</option><option>1.4</option><option>1.5</option><option>1.6</option><option>1.75</option><option>2</option></select></div><div id="ff-font-style"><h6>Font Style</h6><ul data-ff="fontStyle"><li>italic</li><li>normal</li></ul></div></div><div class="wrap"><div id="ff-font-face"><h6>@font-face</h6><div id="ff-font-drop">Drag a font here.</div><ul data-ff="fontFamily"></ul></div><div id="ff-text-transform"><h6>Text Transform</h6><ul data-ff="textTransform"><li>uppercase</li><li>lowercase</li><li>capitalize</li><li>none</li></ul></div><div id="ff-font-variant"><h6>Font Variant</h6><ul data-ff="fontVariant"><li>small-caps</li><li>normal</li></ul></div></div><div id="ff-controls"><div class="left">&larr;</div><div class="right">&rarr;</div><div class="up">&uarr;</div><div class="down">&darr;</div></div><div id="ff-credit"><a href="http://somadesign.ca/projects/fontfriend/" title="Soma FontFriend homepage">Soma FontFriend</a></div><div id="ff-clear" title="clear all styles">S</div></div>',
+		html: '<div id="ff-drop"><span id="ff-toggle">F<sup>2</sup></span><div id="ff-selector"><h6>Selector</h6><form action="" method="get"><ol><li><input type="radio" name="jq-select" checked="checked" id="jq1"><label for="jq1">body</label></li><li><input type="radio" name="jq-select" id="jq2"><label for="jq2">h1,h2,h3,h4,h5,h6</label></li><li><input type="radio" name="jq-select" id="jq3"><label for="jq3">p</label></li><li><input type="radio" name="jq-select" id="jq4"><input type="text" name="ff-blah" value="roll your own" id="ff-blah"></li></ol></form><p>Roll your own selector using <a href="http://api.jquery.com/category/selectors/">jQuery selectors</a>.</p></div><div id="ff-font-family"><h6>Font Family</h6><ul id="ff-font-family-sans" data-ff="fontFamily"><li>Arial</li><li>Verdana</li><li>Tahoma</li><li class="core">Trebuchet MS</li><li>Helvetica</li><li>Helvetica Neue</li><li>Gill Sans</li><li>Century Gothic</li><li>Lucida Grande</li><li>Lucida Sans Unicode</li><li>Calibri</li><li>Corbel</li><li>Candara</li></ul><ul id="ff-font-family-serif" data-ff="fontFamily"><li>Times New Roman</li><li class="core">Georgia</li><li>Times</li><li>Palatino</li><li>Palatino Linotype</li><li>Baskerville</li><li>Hoefler Text</li><li>Garamond</li><li>Constantia</li><li>Cambria</li><li class="family-custom"><input type="text" name="family-custom" value="your font family" id="family-custom"><span id="family-custom-add">+</span></li></ul></div><div class="wrap"><div id="ff-font-size"><h6>Font Size</h6><select data-ff="fontSize"><option>10</option><option>11</option><option>12</option><option>14</option><option>16</option><option>18</option><option>21</option><option>24</option><option>36</option><option>48</option><option>60</option><option>72</option></select></div><div id="ff-font-weight"><h6>Font Weight</h6><select data-ff="fontWeight"><option>100</option><option>200</option><option>300</option><option value="400" selected>400 (normal)</option><option>500</option><option>600</option><option value="700">700 (bold)</option><option>800</option><option>900</option></select></div><div id="ff-line-height"><h6>Line Height</h6><select data-ff="lineHeight"><option>1</option><option>1.1</option><option>1.2</option><option>1.3</option><option>1.4</option><option selected>1.5</option><option>1.6</option><option>1.75</option><option>2</option><option>2.5</option><option>3</option></select></div><div id="ff-font-style"><h6>Font Style</h6><ul data-ff="fontStyle"><li>italic</li><li>normal</li></ul></div></div><div class="wrap"><div id="ff-font-face"><h6>@font-face</h6><div id="ff-font-drop">Drag a font here.</div><ul data-ff="fontFamily"></ul></div><div id="ff-text-transform"><h6>Text Transform</h6><ul data-ff="textTransform"><li>uppercase</li><li>lowercase</li><li>capitalize</li><li>none</li></ul></div><div id="ff-font-variant"><h6>Font Variant</h6><ul data-ff="fontVariant"><li>small-caps</li><li>normal</li></ul></div></div><div id="ff-controls"><div class="left">&larr;</div><div class="right">&rarr;</div><div class="up">&uarr;</div><div class="down">&darr;</div></div><div id="ff-credit"><a href="http://somadesign.ca/projects/fontfriend/" title="Soma FontFriend homepage">Soma FontFriend</a></div><div id="ff-clear" title="clear all styles">S</div></div>',
 		customFamiles: false,
 		customFamilyMap: []
-	},
-	body = $("body");
-
-	$("head").append('<style id="font-friend-stylesheet" type="text/css" media="screen">'+fontFriend.css+'</style>');
-	body.append("<div id='font-friend'></div>");
-	$("#font-friend").html(fontFriend.html).addClass("open");
-	$("#ff-credit").append("<span> "+fontFriend.version+"</span>");
-
-	// on Web Font Specimen?
-	fontFriend.wfs = ( window.location.href == "http://webfontspecimen.com/demo/" ) ? true : false;
-	fontFriend.wfsName = ( fontFriend.wfs ) ? $("h1, .bodysize tr:first-child th:first-child") : false;
-	// or, on Soma Web Font Specimen?
-	if ( ! fontFriend.wfs && $("body").attr("id") == 'soma-web-font-specimen' ) {
-		fontFriend.wfs = true;
-		fontFriend.wfsName = $("h1, .bodysize tr:first-child th.base");
-	}
-	if ( fontFriend.wfs ) {
-		fontFriend.wfsOriginalName = $("h1").text();
-		fontFriend.wfsTitle = $("title").text();
-	}
-
-	/**
-	 * We can define a custom family list with the fontFriendFamilies JS array/object
-	 * or with the data-ff-families attribute on the <body> element (comma separated).
-	 * 
-	 */
-	if ( typeof(fontFriendFamilies) !== 'undefined' ) {
-		fontFriend.customFamilies = fontFriendFamilies;
-		// not an array. It must be an object
-		if ( ! $.isArray(fontFriend.customFamilies)) {
-			var fffTemp = [];
-			$.each( fontFriend.customFamilies, function(index, value) {
-				fffTemp.push(index);
-			});
-			fontFriend.customFamilies = fffTemp;
-			fontFriend.customFamilyMap = fontFriendFamilies;
+	};
+	
+	function maybeInit() {
+		if ( typeof(window.jQuery) === undef ) {
+			var jq = document.createElement("script");
+			jq.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js';
+			document.getElementsByTagName('head')[0].appendChild(jq);
+			jqInterval = setInterval(jqCheck, 100);
+		}
+		else {
+			init();
 		}
 	}
-	else if ( body.attr("data-ff-families") ) {
-		fontFriend.customFamilies = body.attr("data-ff-families").split(',');
+	maybeInit();
+	
+	function jqCheck() {
+		if ( typeof(window.jQuery) !== undef ) {
+			clearInterval(jqInterval);
+			init();
+		}
+	}
+	
+	function init() {
+		$ = window.jQuery;
+		
+		// check if it's already been added. saves against weirdness if clicked again.
+		if ( $('#font-friend').size() !== 0 ) {
+			// if they've clicked on the bookmarklet a second time, assume they want to open it
+			$("#font-friend").animate({height:fontFriend.height, width:fontFriend.width},100).addClass("open");
+			return false;
+		}
+		
+		body = $("body");
+		$("head").append('<style id="font-friend-stylesheet" type="text/css" media="screen">'+fontFriend.css+'</style>');
+		body.append("<div id='font-friend'></div>");
+		$("#font-friend").html(fontFriend.html).addClass("open");
+		$("#ff-credit").append("<span> "+fontFriend.version+"</span>");
+		
+		addBehaviours();
+		customFamilyDefinitionsCheck();
+		addIncrementors();
+		buildFamilies();
+		webfontSpecimenCheck();
+		maybeAddTypekit();
+	}
+	
+	function customFamilyDefinitionsCheck() {
+		/**
+		 * We can define a custom family list with the fontFriendFamilies JS array/object
+		 * or with the data-ff-families attribute on the <body> element (comma separated).
+		 * 
+		 */
+		if ( typeof(fontFriendFamilies) !== undef ) {
+			fontFriend.customFamilies = fontFriendFamilies;
+			// not an array. It must be an object
+			if ( ! $.isArray(fontFriend.customFamilies)) {
+				var fffTemp = [];
+				$.each( fontFriend.customFamilies, function(index, value) {
+					fffTemp.push(index);
+				});
+				fontFriend.customFamilies = fffTemp;
+				fontFriend.customFamilyMap = fontFriendFamilies;
+			}
+		}
+		else if ( body.attr("data-ff-families") ) {
+			fontFriend.customFamilies = body.attr("data-ff-families").split(',');
+		}
+	}
+	
+	function webfontSpecimenCheck() {
+		// on Web Font Specimen?
+		fontFriend.wfs = ( window.location.href == "http://webfontspecimen.com/demo/" );
+		fontFriend.wfsName = ( fontFriend.wfs ) ? $("h1, .bodysize tr:first-child th:first-child") : false;
+		// or, on Soma Web Font Specimen?
+		if ( ! fontFriend.wfs && $("body").attr("id") == 'soma-web-font-specimen' ) {
+			fontFriend.wfs = true;
+			fontFriend.wfsName = $("h1, .bodysize tr:first-child th.base");
+		}
+		if ( fontFriend.wfs ) {
+			fontFriend.wfsOriginalName = $("h1").text();
+			fontFriend.wfsTitle = $("title").text();
+		}
 	}
 
+	function addIncrementors() {
+		$("#font-friend").find("select").each(function(index) {
+			var html = $('<span class="ff-toggler"><span class="ff-up" title="Increase">&#9650;</span><span class="ff-down" title="Decrease">&#9660;</span></span>');
+			html.insertBefore(this);
+		});
+		$(".ff-toggler span").click(incrementDropdown);
+	}
+	
+	function incrementDropdown(event) {
+		var self = $(this),
+		increase = event.target.className == 'ff-up',
+		dropdown = self.parent().next(),
+		current = dropdown.find(":selected"),
+		changeTo;
+		
+		changeTo = ( increase ) ? current.next() : current.prev();
+		if ( changeTo.size() == 0 ) {
+			changeTo = ( increase ) ? dropdown.find(":first") : dropdown.find(":last");
+		}
+		changeTo.attr("selected", "selected");
+		dropdown.trigger("change");
+	}
+	
 	// Searches the html page for a script loaded from use.typekit.
 	// Returns the kit ID as a string.
 	function findKitId(){
@@ -103,12 +162,10 @@
 				fontList.push(family.name);
 			});
 			addCustomFontList(fontList);
-			buildFamilies();
 			$("#ff-font-family h6").addClass("typekit-badge");
 		}
 	});
 	}
-	maybeAddTypekit();
 
 	function addCustomFontList(list){
 		var existingUl = $("#ff-font-family-custom"),
@@ -123,7 +180,8 @@
 
 		// exit early if we already have a list
 		if ( existingUl.size() === 1 ) {
-			return existingUl.append(html);
+			existingUl.append(html);
+			return buildFamilies();
 		}
 	
 		html = ul.append(html);
@@ -159,6 +217,7 @@
 				});
 			
 			});
+		buildFamilies();
 		$("#ff-font-family > h6").click();
 	}
 
@@ -173,7 +232,7 @@
 			return false;
 
 		// empty call = reset
-		if ( name == undef ) {
+		if ( ! name ) {
 			fontFriend.wfsName.text(fontFriend.wfsOriginalName);
 			$("title").text(fontFriend.wfsTitle);
 		}
@@ -181,138 +240,25 @@
 			fontFriend.wfsName.text(name);
 			$("title").text( fontFriend.wfsTitle.replace('Font name', name) );
 		}
-	}
-
-	// reuse later
-	var ff = $("#font-friend");
-
-	fontFriend.width = ff.outerWidth();
-	fontFriend.height = ff.outerHeight();
-
-	// open and close animations
-	$("#ff-toggle").toggle(function() {
-		ff.removeClass("open").animate({height:16, width:16},100);
-	}, function() {
-		ff.addClass("open").animate({height:fontFriend.height, width:fontFriend.width},100);
-	});
+	}	
+	
 
 	function maybeFontStack(fontFamily) {
 		// is it in our map?
-		if ( fontFriend.customFamilyMap[fontFamily] !== undef ) {
+		if ( typeof(fontFriend.customFamilyMap[fontFamily]) !== undef ) {
 			fontFamily = fontFriend.customFamilyMap[fontFamily];
 		}
 		// add monospace as a fallback in the stack
 		return fontFamily + ",monospace";
 	}
 
-	// the main attraction: change that font
-	$("#ff-drop ul > li").live("click", function() {
-		// don't do anything if we clicked on an input inside an li
-		if ( $(this).children("input").length ) {
-			return false;
-		}
-	
-		// set variables
-		var self = $(this),
-		theAttribute = self.parent().attr("data-ff"),
-		theValue = self.text(),
-		theSelector = $("#ff-drop ol input:checked").next().text();
-		if (theSelector == "") {
-			theSelector = $("#ff-drop ol input:checked").next().attr("value");
-		}
-	
-		// font-family-specific
-		if ( theAttribute == 'fontFamily' ) {
-			changeFontName(theValue);
-			theValue = maybeFontStack(theValue);
-		}
-
-		// apply that css
-		$(theSelector).css(theAttribute, theValue);
-
-	});
-
-	$("#ff-drop select").change(function() {
-		// set variables
-		var theAttribute = $(this).attr("data-ff"),
-		theValue = parseFloat( $(this).find("option:selected").val() ),
-		theSelector = $("#ff-drop ol input:checked").next().text();
-		if (theSelector == "") {
-			theSelector = $("#ff-drop ol input:checked").next().attr("value");
-		}
-		// debug: console.log(theAttribute + " " + theValue + " " + theSelector);
-		// apply that css
-		$(theSelector).css(theAttribute, theValue);
-	});
-
-	// unbind the click on the custom font family input (it's in a <li> element)
-	$("#ff-drop li.family-custom").unbind();
-
-	// just type and change that custom font
-	$("#family-custom").keyup(function() {
-
-		// variables
-		var theValue = $("#family-custom").attr("value"),
-		theSelector = $("#ff-drop ol input:checked").next().text();
-		if (theSelector == "") {
-			theSelector = $("#ff-drop ol input:checked").next().attr("value");
-		}
-	
-
-		// apply that custom font
-		$(theSelector).css("fontFamily", theValue);
-		changeFontName(theValue);
-
-		return false;
-	});
-
-	//move the box around
-	$("#ff-controls div").click(function() {
-		if ($(this).hasClass("left") ) {
-			$("#font-friend").css({left:30, right:"auto"});
-		} 
-		if ($(this).hasClass("right") ) {
-				$("#font-friend").css({right:30, left:"auto"});
-		}
-		if ($(this).hasClass("up") ) {
-			$("#font-friend").css({top:0, bottom:"auto"});
-		}
-		if ($(this).hasClass("down") ) {
-			$("#font-friend").css({bottom:0, top:"auto"});
-		}
-	});
-
-	//clearout the text input onclick
-	$("#ff-blah, #family-custom").each(function(index) {
-		$(this).attr('data-ff', $(this).attr("value") );
-	}).click(function() {
-
-		$(this).prev().attr("checked", "checked");
-
-		if ($(this).attr("value") == $(this).attr("data-ff") ) {
-			$(this).removeAttr("value");
-		} else {
-			$(this).select();
-		}
-
-	});
-
-	// clear all inline styles -> might crash large pages!
-	$("#ff-clear").click(function() {
-		$("*").not("[data-ff=fontFamily]").removeAttr("style");
-		buildFamilies();
-		if ( fontFriend.wfs )
-			changeFontName(); //empty call resets
-	});
-
 	// add inline font-family styles
 	function buildFamilies() {
 		$("#ff-font-family li, #ff-font-face li").each(function() {
 			var self = $(this);
-			self.css('fontFamily', maybeFontStack(self.text()) );
+			self.css('fontFamily', maybeFontStack(self.text()));
 		});
 	}
-	buildFamilies();
 	
 	function processData(file, name) {
 		var reader = new FileReader();
@@ -371,7 +317,6 @@
 		// Get font file and prepend it to stylsheet using @font-face rule
 		$("<style type='text/css'>@font-face{font-family: "+name+"; src:url("+data+");}</style> ").appendTo("head");
 		addCustomFontList([name]);
-		buildFamilies();
 		$("#ff-font-family-custom").find("li:last").click();
 	};
 	
@@ -379,11 +324,138 @@
 		event.stopPropagation();
 		event.preventDefault();
 	}
+	
+	function addBehaviours() {
+		// reuse later
+		var ff = $("#font-friend");
 
-	// add event listeners for dropper
-	$("#ff-font-drop")
-		.bind("dragover", preventActions)
-		.bind("dragenter dragleave", function(event){$(this).toggleClass("dropzone"); preventActions(event); })
-		.bind("drop", handleDrop);
+		fontFriend.width = ff.outerWidth();
+		fontFriend.height = ff.outerHeight();
 
-}(jQuery, window));
+		// open and close animations
+		$("#ff-toggle").toggle(function() {
+			ff.removeClass("open").animate({height:16, width:16},100);
+		}, function() {
+			ff.addClass("open").animate({height:fontFriend.height, width:fontFriend.width},100);
+		});
+		
+		// the main attraction: change that font
+		$("#ff-drop ul > li").live("click", function() {
+			// don't do anything if we clicked on an input inside an li
+			if ( $(this).children("input").length ) {
+				return false;
+			}
+
+			// set variables
+			var self = $(this),
+			theAttribute = self.parent().attr("data-ff"),
+			theValue = self.text(),
+			theSelector = $("#ff-drop ol input:checked").next().text();
+			if (theSelector == "") {
+				theSelector = $("#ff-drop ol input:checked").next().attr("value");
+			}
+
+			// font-family-specific
+			if ( theAttribute == 'fontFamily' ) {
+				changeFontName(theValue);
+				theValue = maybeFontStack(theValue);
+			}
+
+			// apply that css
+			$(theSelector).css(theAttribute, theValue);
+
+		});
+		
+		$("#ff-drop select").change(function() {
+			// set variables
+			var theAttribute = $(this).attr("data-ff"),
+			theValue = parseFloat( $(this).find("option:selected").val() ),
+			theSelector = $("#ff-drop ol input:checked").next().text();
+			if (theSelector == "") {
+				theSelector = $("#ff-drop ol input:checked").next().attr("value");
+			}
+			// debug: console.log(theAttribute + " " + theValue + " " + theSelector);
+			// apply that css
+			$(theSelector).css(theAttribute, theValue);
+		});
+
+		// unbind the click on the custom font family input (it's in a <li> element)
+		$("#ff-drop li.family-custom").unbind();
+
+		// just type and change that custom font
+		$("#family-custom").keyup(function(event) {
+
+			// variables
+			var theValue = $("#family-custom").attr("value"),
+			theSelector = $("#ff-drop ol input:checked").next().text();
+			if (theSelector == "") {
+				theSelector = $("#ff-drop ol input:checked").next().attr("value");
+			}
+
+			if ( event.keyCode == 13 ) { // did we hit enter?
+				$("#family-custom-add").click();
+			}
+			else {
+				// apply that custom font
+				$(theSelector).css("fontFamily", theValue);
+				changeFontName(theValue);
+			}
+
+			preventActions(event);
+		});
+		
+		//move the box around
+		$("#ff-controls div").click(function() {
+			if ($(this).hasClass("left") ) {
+				$("#font-friend").css({left:30, right:"auto"});
+			} 
+			if ($(this).hasClass("right") ) {
+					$("#font-friend").css({right:30, left:"auto"});
+			}
+			if ($(this).hasClass("up") ) {
+				$("#font-friend").css({top:0, bottom:"auto"});
+			}
+			if ($(this).hasClass("down") ) {
+				$("#font-friend").css({bottom:0, top:"auto"});
+			}
+		});
+
+		//clearout the text input onclick
+		$("#ff-blah, #family-custom").each(function(index) {
+			$(this).attr('data-ff', $(this).attr("value") );
+		}).click(function() {
+
+			$(this).prev().attr("checked", "checked");
+
+			if ($(this).attr("value") == $(this).attr("data-ff") ) {
+				$(this).removeAttr("value");
+			} else {
+				$(this).select();
+			}
+
+		});
+
+		// clear all inline styles -> might crash large pages!
+		$("#ff-clear").click(function() {
+			$("*").not("[data-ff=fontFamily]").removeAttr("style");
+			buildFamilies();
+			changeFontName(); //empty call resets
+		});
+		
+		$("#family-custom-add").click(function() {
+			var input = $(this).prev(),
+			fontName = input.val();
+			if (fontName !== "your font family" && fontName !== "") {
+				addCustomFontList([fontName]);
+				input.val("").select();
+			}
+		});
+		
+		// add event listeners for dropper
+		$("#ff-font-drop")
+			.bind("dragover", preventActions)
+			.bind("dragenter dragleave", function(event){$(this).toggleClass("dropzone"); preventActions(event); })
+			.bind("drop", handleDrop);
+	}
+
+}(this, this.document));
