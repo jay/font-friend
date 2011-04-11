@@ -82,10 +82,11 @@
 				$.each( val.cssRules, function(index,value) {
 					if ( value.type == fontFaceRuleType ) {
 						var fontFamily = value.style.getPropertyValue('font-family');
-						if ( fontFamily && fontFamily !== "testfont" ) { // Modernizr uses testfont
-							// Firefox adds quotes to font name;
-							fontFamily = fontFamily.replace(/^"/, "").replace(/"$/, ""); 
-							fontFamilies.push(fontFamily);
+						if ( fontFamily ) {
+							// Firefox sometimes adds quotes to font name;
+							fontFamily = fontFamily.replace(/^"|'/, "").replace(/"|'$/, "");
+							if ( fontFamily !== "testfont" ) // Modernizr uses testfont
+								fontFamilies.push(fontFamily);
 						}
 					}
 				} );
