@@ -73,14 +73,13 @@
 	
 	function populateDeclaredFontFaceRules() {
 		var css = document.styleSheets || [],
-		fontFaceRuleType = CSSRule.FONT_FACE_RULE,
 		fontFamilies = [];
 
 		$.each( css, function(i,val){
 			// try/catch because xdomain security prevents me from reading external stylesheets
 			try {
 				$.each( val.cssRules, function(index,value) {
-					if ( value.type == fontFaceRuleType ) {
+					if ( value.type == CSSRule.FONT_FACE_RULE ) {
 						var fontFamily = value.style.getPropertyValue('font-family');
 						if ( fontFamily ) {
 							// Firefox sometimes adds quotes to font name;
@@ -325,7 +324,7 @@
 				droppedFileName;
 	
 			if(droppedFullFileName.match(acceptedFileExtensions)) {
-				droppedFileName = fontNameCleaner(droppedFileName);
+				droppedFileName = fontNameCleaner(droppedFullFileName);
 				processData(file, droppedFileName);
 		
 			} else {
@@ -358,31 +357,13 @@
 		event.preventDefault();
 	}
 	
-	function arrayUnique(inputArr) {
-		// Removes duplicate values from array  
-		// discuss at: http://phpjs.org/functions/array_unique 
-		var key = '', 
-			tmp_arr2 = {},
-			val = '';
-
-		var __array_search = function (needle, haystack) {
-			var fkey = '';	for (fkey in haystack) {
-				if (haystack.hasOwnProperty(fkey)) {
-					if ((haystack[fkey] + '') === (needle + '')) {
-						return fkey;
-					}			}
-			}
-			return false;
-		};
-		 for (key in inputArr) {
-			if (inputArr.hasOwnProperty(key)) {
-				val = inputArr[key];
-				if (false === __array_search(val, tmp_arr2)) {
-					tmp_arr2[key] = val;}
-			}
-		}
-
-		return tmp_arr2;
+	// http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
+	function arrayUnique(array) {
+		var l = array.length,
+			o = {}, r = [], i;
+		for (i=0; i<l; i+=1) o[array[i]] = array[i];
+		for (i in o) r.push(o[i]);
+		return r;
 	}
 	
 	function addBehaviours() {

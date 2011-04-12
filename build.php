@@ -1,6 +1,6 @@
 <?php
 
-$version = '3.0';
+$version = '3.0.1';
 
 header('Content-type: text/plain');
 

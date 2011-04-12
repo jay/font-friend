@@ -7,9 +7,9 @@
 	background-color: rgba(255,255,255,0.93);
 	width: 740px;
 	color: #222;
-	-moz-box-shadow: 1px 1px 5px rgba(0,0,0,.3);
 	-webkit-box-shadow: 1px 1px 5px rgba(0,0,0,.3);
-	box-shadow: 1px 1px 5px rgba(0,0,0,.3);
+	   -moz-box-shadow: 1px 1px 5px rgba(0,0,0,.3);
+	        box-shadow: 1px 1px 5px rgba(0,0,0,.3);
 	z-index: 10000;
 	text-align: left;
 	height: 280px;
@@ -75,7 +75,7 @@ padding: 0 3px;
 	float: left;
 	width: 120px;
 	padding-right: 20px;
-	margin-bottom: 12px;
+	margin: 0 !important;
 }
 #ff-drop > div.wrap > div {
 	margin-bottom: 12px;
