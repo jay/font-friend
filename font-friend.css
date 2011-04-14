@@ -76,6 +76,7 @@ padding: 0 3px;
 	width: 120px;
 	padding-right: 20px;
 	margin: 0 !important;
+	position:relative;
 }
 #ff-drop > div.wrap > div {
 	margin-bottom: 12px;
@@ -95,7 +96,7 @@ padding: 0 3px;
 	padding: 0 !important;
 }
 #ff-controls {
-	position: absolute;
+	position: absolute !important;
 	bottom: 60px;
 	left: 65px;
 	width: 55px !important;
@@ -264,6 +265,8 @@ padding: 0 3px;
 }
 #ff-drop .ff-clickable {
 	cursor:pointer;
+	position:relative;
+	z-index:2;
 }
 #ff-font-family h6 span {
 	text-transform:uppercase !important;
@@ -282,8 +285,18 @@ padding: 0 3px;
 	border-right:1px solid #bbb;
 	margin-right:6px;
 }
-#ff-font-family h6.typekit-badge {
-	background:url(http://typekit.com/favicon.ico) no-repeat center right;
+#ff-badges {
+	position:absolute;
+	right:14px;
+	top:0;
+	z-index:14px;
+}
+#ff-badges > img {
+	padding:0 4px 0 0 !important;
+	margin:0 !important;
+	border:0 !important;
+	width: 16px !important;
+	height:16px !important;
 }
 #ff-drop #ff-font-family #ff-font-family-custom {
 	width:100%;

@@ -196,7 +196,7 @@
 			families.push( v.split(":")[0].replace("+"," ") );
 		});
 		if ( families.length > 0 )
-			addCustomFontList(families);
+			addCustomFontList(families, 'www.google.com');
 	}
 	
 	function findGoogleLink() {
@@ -236,22 +236,25 @@
 				fontFriend.customFamilyMap[family.name] = family.css_names.join(',');
 				fontList.push(family.name);
 			});
-			addCustomFontList(fontList);
-			$("#ff-font-family h6").addClass("typekit-badge");
+			addCustomFontList(fontList, "typekit.com");
 		}
 	});
 	}
 
-	function addCustomFontList(list){
+	function addCustomFontList(list, badge){
 		var existingUl = $("#ff-font-family-custom"),
 		ul = $('<ul id="ff-font-family-custom" data-ff="fontFamily" class="ff-hidden"></ul>'),
 		html = "",
-		h6Title = 'Click to toggle between custom &amp; stock font families',
+		h6Title = 'Click to toggle between custom & stock font families',
 		toggler = ': <span class="ff-custom ff-active">Custom</span><span class="ff-stock">Stock</span>';
 	
 		$.each(list, function(index, value){
 			html += "<li>" + value + "</li>";
 		});
+		
+		if ( badge !== undef ) {
+			$("<img />", {src:"//"+badge+"/favicon.ico"}).appendTo("#ff-badges");
+		}
 
 		// exit early if we already have a list
 		if ( existingUl.size() === 1 ) {
