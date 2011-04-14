@@ -67,8 +67,14 @@
 		addIncrementors();
 		buildFamilies();
 		webfontSpecimenCheck();
-		maybeAddTypekit();
+		maybeAddEmbeddedFonts();
+	}
+	
+	function maybeAddEmbeddedFonts() {
 		populateDeclaredFontFaceRules();
+		maybeAddTypekit();
+		maybeAddGoogle();
+		maybeAddTypotheque();
 	}
 	
 	function populateDeclaredFontFaceRules() {
@@ -160,7 +166,48 @@
 		changeTo.attr("selected", "selected");
 		dropdown.trigger("change");
 	}
+
+	function maybeAddTypotheque() {
+		var key = findTypothequeLink(), data;
+		if ( ! key ) return;
+		
+		$.getJSON("http://www.typotheque.com/ajax/webfont_api.php?key=" + key, function(data) {
+			console.log(data);
+		});
+	}
 	
+	function findTypothequeLink() {
+		var link = false;
+		$('link[href*="wf.typotheque.com"]').each(function() {
+			link = $(this).attr("href").split("/").pop();
+			return false;
+		});
+		return link;
+	}
+
+	function maybeAddGoogle() {
+		var gApi = findGoogleLink(), 
+			queryString,
+			families = [];
+		if ( ! gApi ) return;
+		
+		queryString = gApi.split("family=").pop();
+		$.each(queryString.split("|"), function(i,v) {
+			families.push( v.split(":")[0].replace("+"," ") );
+		});
+		if ( families.length > 0 )
+			addCustomFontList(families);
+	}
+	
+	function findGoogleLink() {
+		var link = false;
+		$('link[href*="fonts.googleapis.com"]').each(function() {
+			link = $(this).attr("href");
+			return false;
+		});
+		return link;
+	}
+
 	// Searches the html page for a script loaded from use.typekit.
 	// Returns the kit ID as a string.
 	function findKitId(){
