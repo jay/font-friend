@@ -12,7 +12,7 @@
 	        box-shadow: 1px 1px 5px rgba(0,0,0,.3);
 	z-index: 10000;
 	text-align: left;
-	height: 280px;
+	height: 310px;
 }
 #font-friend, #ff-drop h6, #ff-drop li {
 	line-height:1.5 !important;
@@ -70,6 +70,8 @@ padding: 0 3px;
 	padding: 0 !important;
 	text-indent: 0 !important;
 	float: none !important;
+	height:1.5em !important;
+	white-space:nowrap;
 }
 #ff-drop > div {
 	float: left;
@@ -211,7 +213,7 @@ padding: 0 3px;
 	margin-left: 5px;
 	display: inline !important;
 }
-#ff-credit {
+#ff-drop > #ff-credit {
 	position: absolute;
 	bottom: 21px;
 	left: 32px;
@@ -226,7 +228,7 @@ padding: 0 3px;
 #font-friend a:hover {
 	color: #A60007 !important;
 }
-#ff-clear {
+#ff-drop > #ff-clear {
 	position: absolute;
 	bottom: 0;
 	right: 0;
@@ -256,6 +258,10 @@ padding: 0 3px;
 #ff-drop select {
 	width: 105px !important;
 	margin-left:15px !important;
+}
+#ff-google-webfonts select {
+	width:99% !important;
+	margin:0 !important;
 }
 #ff-drop select option {
 	font-size: 10px !important;

@@ -25,7 +25,8 @@
 		// inserted html. see font-friend.html for understandable version
 		html: '%html%',
 		customFamiles: false,
-		customFamilyMap: []
+		customFamilyMap: [],
+		googleFamilies: []
 	};
 	
 	function maybeInit() {
@@ -68,6 +69,46 @@
 		buildFamilies();
 		webfontSpecimenCheck();
 		maybeAddEmbeddedFonts();
+		getGoogleFonts();
+	}
+	
+	function getGoogleFonts() {
+		var gFontList = [];
+		$.getJSON("http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.google.com%2Fwebfonts%3Fsort%3Dalpha%22%20and%20xpath%3D%22%2Fhtml%2Fbody%2Ful%5B3%5D%22&format=json", function(data){
+			$.each(data.query.results.ul.li, function(index, value) {
+				gFontList.push(value.div.div[2].span);
+			});
+			makeGFontDrop(gFontList);
+		});
+	}
+	
+	function makeGFontDrop(list) {
+		var listy = ['<option value="0">Choose:</option>'],
+		list;
+		$.each(list, function(i,v){
+			listy.push("<option value='"+v.replace(/ /g, '+')+"'>"+v+"</option>");
+		});
+		list = $("<select>" + listy.join('') + "</select>");
+		list.change(addGoogleFont);
+		$("#ff-google-webfonts > div").html(list);
+	}
+	
+	function addGoogleFont() {
+		var self = $(this),
+			val = self.val(),
+			fontName = val.replace(/\+/g, ' '),
+			base = "http://fonts.googleapis.com/css?family=",
+			suffix = ":100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i",
+			url = base + val + suffix;
+			if ( val === '0' ) {
+				return;
+			}
+			if ( $.inArray(fontName, fontFriend.googleFamilies) === -1 ) {
+				$('<link rel="stylesheet" type="text/css" href="'+url+'" >').appendTo("head");
+				addCustomFontList([fontName], 'www.google.com');
+				$("#ff-font-family-custom").find("li:last").click();
+				fontFriend.googleFamilies.push(fontName);
+			}
 	}
 	
 	function maybeAddEmbeddedFonts() {
@@ -195,8 +236,10 @@
 		$.each(queryString.split("|"), function(i,v) {
 			families.push( v.split(":")[0].replace("+"," ") );
 		});
-		if ( families.length > 0 )
+		if ( families.length > 0 ) {
 			addCustomFontList(families, 'www.google.com');
+			fontFriend.googleFamilies = families;
+		}
 	}
 	
 	function findGoogleLink() {
@@ -240,6 +283,15 @@
 		}
 	});
 	}
+	
+	function doBadge(badge) {
+		var src = "//"+badge+"/favicon.ico",
+			badges = $("#ff-badges"),
+			exist = badges.find("[src='"+src+"']");
+		if ( ! exist.length ) {
+			$("<img />", {src:src}).appendTo(badges);
+		}
+	}
 
 	function addCustomFontList(list, badge){
 		var existingUl = $("#ff-font-family-custom"),
@@ -252,8 +304,8 @@
 			html += "<li>" + value + "</li>";
 		});
 		
-		if ( badge !== undef ) {
-			$("<img />", {src:"//"+badge+"/favicon.ico"}).appendTo("#ff-badges");
+		if ( typeof(badge) !== undef ) {
+			doBadge(badge);
 		}
 
 		// exit early if we already have a list
@@ -335,6 +387,12 @@
 		$("#ff-font-family li, #ff-font-face li").each(function() {
 			var self = $(this);
 			self.css('fontFamily', maybeFontStack(self.text()));
+		});
+		$("#ff-font-style li, #ff-text-transform li, #ff-font-variant li").each(function() {
+			var self = $(this),
+				attr = self.parent().data("ff"),
+				val = self.text();
+			self.css(attr, val);
 		});
 	}
 	
