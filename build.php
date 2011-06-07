@@ -1,6 +1,6 @@
 <?php
 
-$version = '3.1';
+$version = '3.2';
 
 header('Content-type: text/plain');
 
@@ -9,7 +9,6 @@ $yui = $cwd.'yuicompressor-2.4.5.jar';
 $cssfile = $cwd.'font-friend.css';
 $fullfile = $cwd.'font-friend-full.js';
 $targetfile = $cwd.'font-friend.js';
-
 
 $html = file_get_contents('font-friend.html');
 $html = str_replace(array("\n","\r","\t"), '', $html);
