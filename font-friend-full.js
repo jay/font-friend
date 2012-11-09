@@ -1,8 +1,8 @@
 /*!
- * Soma FontFriend 3.2
+ * Soma FontFriend 3.2.1
  * http://somadesign.ca/projects/fontfriend
  *
- * Copyright (c) 2009-11 Matt Wiebe
+ * Copyright (c) 2009-12 Matt Wiebe
  * Licensed under the MIT license
  * http://www.opensource.org/licenses/mit-license.php
  *
@@ -19,7 +19,7 @@
 	var $, body, jqInterval,
 	undef = 'undefined',
 	fontFriend = {
-		version: "3.2",
+		version: "3.2.1",
 		// style info
 		css: "#font-friend{overflow:hidden;position:fixed;bottom:0;left:30px;background-color:#fff;background-color:rgba(255,255,255,0.93);width:740px;color:#222;-webkit-box-shadow:1px 1px 5px rgba(0,0,0,.3);-moz-box-shadow:1px 1px 5px rgba(0,0,0,.3);box-shadow:1px 1px 5px rgba(0,0,0,.3);z-index:10000;text-align:left;height:310px}#font-friend,#ff-drop h6,#ff-drop li{line-height:1.5!important}#ff-drop{padding:12px 12px 12px 36px}#ff-toggle{background-color:#222;color:#eee;display:block;width:12px;height:16px;padding:0 1px 0 3px;position:absolute;top:0;left:0;font-size:16px;line-height:1!important;cursor:pointer;z-index:10001;-moz-transition:.25s all ease-in-out;-webkit-transition:.25s all ease-in-out;-o-transition:.25s all ease-in-out;transition:.25s all ease-in-out}#ff-toggle sup{font-size:13px;line-height:1!important;vertical-align:super;display:none}.open #ff-toggle sup{display:inline}#ff-toggle:hover{color:#fff;background-color:#555}.open #ff-toggle{width:auto;height:32px;font-size:32px;padding:0 3px}#ff-drop form{background:0;color:inherit;float:none}#ff-drop h6{font-size:13px;border-bottom:1px solid #aaa;margin:0 0 6px!important;padding:0!important;text-indent:0!important;float:none!important;height:1.5em!important;white-space:nowrap}#ff-drop>div{float:left;width:120px;padding-right:20px;margin:0!important;position:relative}#ff-drop>div.wrap>div{margin-bottom:12px;font-size:11px!important;position:relative}#ff-drop div#ff-selector{width:130px}#ff-drop div#ff-font-family{width:240px}#ff-selector p{font-size:9px!important;line-height:1.2!important;margin:1em 0 0!important;padding:0!important}#ff-controls{position:absolute!important;bottom:60px;left:65px;width:55px!important;height:60px;margin:0!important;padding:0!important}#ff-controls div{position:absolute;font-size:20px;width:1em;height:1em;color:#555;min-width:inherit!important;min-height:inherit!important;padding:0;margin:0;float:none;text-align:center}#ff-controls>div,.ff-toggler>span,#family-custom-add{font-family:sans-serif!important;font-weight:normal!important;-webkit-user-select:none;-moz-user-select:none;user-select:none;cursor:pointer}#ff-controls div:hover{color:#000}#ff-controls .up{left:1em;top:0}#ff-controls .down{left:1em;bottom:0}#ff-controls .left{left:0;top:1em}#ff-controls .right{right:-.25em;top:1em}#ff-drop #ff-font-family ul{float:left;width:110px;padding-right:5px}#ff-drop #ff-font-family ul#ff-font-family-sans{padding-right:10px;width:115px}#ff-drop ol li{list-style:none outside}#ff-drop ol,#ff-drop ul{margin:0;padding:0}#ff-drop li{font-size:11px!important;\ margin:0!important;padding:0!important;list-style:none outside none!important;text-indent:0!important;height:auto!important}#ff-drop li.core{margin-bottom:4px!important;padding:0!important}#ff-drop ul li:hover{cursor:pointer;background-color:#e6e6e6!important}#ff-drop ul li.family-custom{margin:12px 0 0!important}#ff-drop ul li.family-custom:hover{cursor:default;background:none!important}#family-custom-add{display:inline-block;color:#aaa;line-height:1!important;font-size:15px!important;color:#666!important;vertical-align:top;padding:1px 3px 3px}#family-custom-add:hover,#family-custom-add:focus{background-color:#555!important;color:#fff!important}#family-custom{width:85px}#ff-drop ol input[type=radio]{margin-left:-5px;width:auto!important}#ff-blah{width:100px;margin-left:5px}#ff-drop ol label{margin-left:5px;display:inline!important}#ff-drop>#ff-credit{position:absolute;bottom:21px;left:32px;font-size:9px;margin:0!important}#font-friend a{color:#4c0003!important;text-decoration:underline!important;border:0!important}#font-friend a:hover{color:#a60007!important}#ff-drop>#ff-clear{position:absolute;bottom:0;right:0;padding:5px 5px 0!important;text-decoration:line-through;opacity:.1;font-size:21px;margin:0!important;width:auto!important}#ff-clear:hover{opacity:1;cursor:pointer}#ff-font-drop{font-size:11px!important;background-color:#e6e6e6;padding:15px 0;text-align:center;border:1px solid #aaa;margin-bottom:6px}#ff-font-drop.dropzone{background-color:#fff;border-color:#111}#ff-drop select{width:105px!important;margin-left:15px!important}#ff-google-webfonts select{width:99%!important;margin:0!important}#ff-drop select option{font-size:10px!important}#ff-drop .ff-hidden{display:none}#ff-drop .ff-clickable{cursor:pointer;position:relative;z-index:2}#ff-font-family h6 span{text-transform:uppercase!important;font-size:75%;font-weight:normal!important;color:#111!important;letter-spacing:.02em;line-height:1;display:inline-block}#ff-font-family h6 .ff-active{color:#aaa!important}#ff-font-family .ff-custom{padding:0 6px;border-right:1px solid #bbb;margin-right:6px}#ff-badges{position:absolute;right:14px;top:0;z-index:14px}#ff-badges>img{padding:0 4px 0 0!important;margin:0!important;border:0!important;width:16px!important;height:16px!important}#ff-drop #ff-font-family #ff-font-family-custom{width:100%;-webkit-column-count:2;-moz-column-count:2;column-count:2;-webkit-column-gap:12px;-moz-column-gap:12px;column-gap:12px}.ff-toggler{position:absolute;height:20px;top:27px;left:-4px}.ff-toggler span{position:absolute;display:block;left:0;top:0;height:8px;width:8px;line-height:1!important;font-size:8px!important;text-align:center;color:#aaa!important;padding:2px 4px!important}.ff-toggler span:hover{color:#333!important}.ff-toggler span.ff-down{top:auto;bottom:0}#ff-drop [data-ff=fontFamily] li{height:1.5em!important;overflow:hidden;text-overflow:ellipsis}",
 		// inserted html. see font-friend.html for understandable version
@@ -38,7 +38,7 @@
 	function maybeInit() {
 		if ( typeof(window.jQuery) === undef ) {
 			var jq = document.createElement("script");
-			jq.src = '//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js';
+			jq.src = '//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js';
 			document.getElementsByTagName('head')[0].appendChild(jq);
 			jqInterval = setInterval(jqCheck, 100);
 		}
@@ -142,7 +142,7 @@
 			addCustomFontList([val], 'www.google.com');
 			self.find(":selected").text('✓ '+val);
 			$("#ff-font-family-custom").find("li:last").click();
-			
+
 			// so we don't add it again later
 			delete fontFriend.googleFamilies[val];
 	}
@@ -151,7 +151,6 @@
 		populateDeclaredFontFaceRules();
 		maybeAddTypekit();
 		maybeAddGoogle();
-		maybeAddTypotheque();
 	}
 
 	function populateDeclaredFontFaceRules() {
@@ -244,24 +243,6 @@
 		dropdown.trigger("change");
 	}
 
-	function maybeAddTypotheque() {
-		var key = findTypothequeLink(), data;
-		if ( ! key ) return;
-
-		$.getJSON("http://www.typotheque.com/ajax/webfont_api.php?key=" + key, function(data) {
-			console.log(data);
-		});
-	}
-
-	function findTypothequeLink() {
-		var link = false;
-		$('link[href*="wf.typotheque.com"]').each(function() {
-			link = $(this).attr("href").split("/").pop();
-			return false;
-		});
-		return link;
-	}
-
 	function maybeAddGoogle() {
 		var gApi = findGoogleLink(),
 			queryString,
@@ -292,9 +273,9 @@
 	function findKitId(){
 		var kitId = null;
 		$('script').each(function(index){
-			var m = this.src.match(/use\.typekit\.com\/(.+)\.js/);
+			var m = this.src.match(/use\.typekit\.(com|net)\/(.+)\.js/);
 			if (m) {
-				kitId = m[1];
+				kitId = m.pop();
 				return false;
 			}
 		});
@@ -452,7 +433,7 @@
 			}); // uppercase it
 		return unCamelCase(name);
 	}
-	
+
 	function unCamelCase (str){
 		return str
 			// insert a space between lower & upper
@@ -557,26 +538,26 @@
 				$(theSelector).css(theAttribute, theValue);
 			}
 		});
-		
+
 		function getTheSelector() {
 			var target = $("#ff-drop ol input:checked").next(),
 				selector = target.text() || target.val();
 			return selector;
 		}
-		
+
 		function changeFontFamily(theValue, theSelector) {
 			theSelector = theSelector || getTheSelector();
 			changeFontName(theValue);
 			theValue = maybeFontStack(theValue);
 			$(theSelector).css('fontFamily', theValue);
 		}
-		
+
 		$("#ff-drop select").change(function() {
 			// set variables
 			var theAttribute = $(this).attr("data-ff"),
 			theValue = parseFloat( $(this).find("option:selected").val() ),
 			theSelector = getTheSelector();
-			
+
 			// apply that css
 			$(theSelector).css(theAttribute, theValue);
 		});

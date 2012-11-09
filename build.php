@@ -1,6 +1,6 @@
 <?php
 
-$version = '3.2';
+$version = '3.2.1';
 
 header('Content-type: text/plain');
 
@@ -24,9 +24,9 @@ $js = strtr($js, array(
 	'%current%' => date('y')
 ));
 
-if ( file_put_contents($fullfile, $js ) ) {	
+if ( file_put_contents($fullfile, $js ) ) {
 	passthru("java -jar {$yui} {$fullfile} -o {$targetfile} --line-break 4000 --charset utf-8", $result);
-	echo ( ! $result ) ? "FontFriend {$version} minified & built" : "build fail";
+	echo ( ! $result ) ? "FontFriend {$version} minified & built\n" : "build fail\n";
 }
 else {
 	echo "build fail";

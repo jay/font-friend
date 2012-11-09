@@ -38,7 +38,7 @@
 	function maybeInit() {
 		if ( typeof(window.jQuery) === undef ) {
 			var jq = document.createElement("script");
-			jq.src = '//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js';
+			jq.src = '//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js';
 			document.getElementsByTagName('head')[0].appendChild(jq);
 			jqInterval = setInterval(jqCheck, 100);
 		}
@@ -142,7 +142,7 @@
 			addCustomFontList([val], 'www.google.com');
 			self.find(":selected").text('✓ '+val);
 			$("#ff-font-family-custom").find("li:last").click();
-			
+
 			// so we don't add it again later
 			delete fontFriend.googleFamilies[val];
 	}
@@ -151,7 +151,6 @@
 		populateDeclaredFontFaceRules();
 		maybeAddTypekit();
 		maybeAddGoogle();
-		maybeAddTypotheque();
 	}
 
 	function populateDeclaredFontFaceRules() {
@@ -244,24 +243,6 @@
 		dropdown.trigger("change");
 	}
 
-	function maybeAddTypotheque() {
-		var key = findTypothequeLink(), data;
-		if ( ! key ) return;
-
-		$.getJSON("http://www.typotheque.com/ajax/webfont_api.php?key=" + key, function(data) {
-			console.log(data);
-		});
-	}
-
-	function findTypothequeLink() {
-		var link = false;
-		$('link[href*="wf.typotheque.com"]').each(function() {
-			link = $(this).attr("href").split("/").pop();
-			return false;
-		});
-		return link;
-	}
-
 	function maybeAddGoogle() {
 		var gApi = findGoogleLink(),
 			queryString,
@@ -292,9 +273,9 @@
 	function findKitId(){
 		var kitId = null;
 		$('script').each(function(index){
-			var m = this.src.match(/use\.typekit\.com\/(.+)\.js/);
+			var m = this.src.match(/use\.typekit\.(com|net)\/(.+)\.js/);
 			if (m) {
-				kitId = m[1];
+				kitId = m.pop();
 				return false;
 			}
 		});
@@ -452,7 +433,7 @@
 			}); // uppercase it
 		return unCamelCase(name);
 	}
-	
+
 	function unCamelCase (str){
 		return str
 			// insert a space between lower & upper
@@ -557,26 +538,26 @@
 				$(theSelector).css(theAttribute, theValue);
 			}
 		});
-		
+
 		function getTheSelector() {
 			var target = $("#ff-drop ol input:checked").next(),
 				selector = target.text() || target.val();
 			return selector;
 		}
-		
+
 		function changeFontFamily(theValue, theSelector) {
 			theSelector = theSelector || getTheSelector();
 			changeFontName(theValue);
 			theValue = maybeFontStack(theValue);
 			$(theSelector).css('fontFamily', theValue);
 		}
-		
+
 		$("#ff-drop select").change(function() {
 			// set variables
 			var theAttribute = $(this).attr("data-ff"),
 			theValue = parseFloat( $(this).find("option:selected").val() ),
 			theSelector = getTheSelector();
-			
+
 			// apply that css
 			$(theSelector).css(theAttribute, theValue);
 		});
