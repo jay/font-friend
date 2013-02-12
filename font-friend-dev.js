@@ -542,7 +542,7 @@
 		// the main attraction: change that font
 		// back compat for non-.on support
 		if ( typeof $.fn.on === undef ) {
-			$("#ff-drop ul > li").on("click", fontChange);
+			$("#ff-drop ul > li").live("click", fontChange);
 		}
 		else {
 			$("#ff-drop").on("click", "ul > li", fontChange);
