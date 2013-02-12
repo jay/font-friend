@@ -510,10 +510,12 @@
 		fontFriend.height = ff.outerHeight();
 
 		// open and close animations
-		$("#ff-toggle").toggle(function() {
-			ff.removeClass("open").animate({height:16, width:16},100);
-		}, function() {
-			ff.addClass("open").animate({height:fontFriend.height, width:fontFriend.width},100);
+		$("#ff-toggle").click(function(){
+			if ( ff.hasClass("open") ) {
+				ff.removeClass("open").animate({height:16, width:16},100);
+			} else {
+				ff.addClass("open").animate({height:fontFriend.height, width:fontFriend.width},100);
+			}
 		});
 
 		// callback for font changes
