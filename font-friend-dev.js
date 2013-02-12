@@ -38,7 +38,7 @@
 	function maybeInit() {
 		if ( typeof(window.jQuery) === undef ) {
 			var jq = document.createElement("script");
-			jq.src = '//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js';
+			jq.src = '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js';
 			document.getElementsByTagName('head')[0].appendChild(jq);
 			jqInterval = setInterval(jqCheck, 100);
 		}
@@ -516,8 +516,8 @@
 			ff.addClass("open").animate({height:fontFriend.height, width:fontFriend.width},100);
 		});
 
-		// the main attraction: change that font
-		$("#ff-drop ul > li").live("click", function() {
+		// callback for font changes
+		function fontChange() {
 			// don't do anything if we clicked on an input inside an li
 			if ( $(this).children("input").length ) {
 				return false;
@@ -537,7 +537,16 @@
 				// apply that css
 				$(theSelector).css(theAttribute, theValue);
 			}
-		});
+		}
+
+		// the main attraction: change that font
+		// back compat for non-.on support
+		if ( typeof $.fn.on === undef ) {
+			$("#ff-drop ul > li").on("click", fontChange);
+		}
+		else {
+			$("#ff-drop").on("click", "ul > li", fontChange);
+		}
 
 		function getTheSelector() {
 			var target = $("#ff-drop ol input:checked").next(),
