@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <title>This is a clone of Font Friend.</title>
+    <style>
+      .download a {
+        background-color: #971B1E;
+        border: 0;
+        padding: 4px 10px 5px;
+        color: #fff;
+           -moz-border-radius: 12px;
+        -webkit-border-radius: 12px;
+                border-radius: 12px;
+        -moz-box-shadow: 1px 1px 2px rgba(0,0,0,0.25);
+        -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,0.25);
+        box-shadow: 1px 1px 2px rgba(0,0,0,0.25);
+        text-shadow: 1px 1px 0 rgba(0,0,0,0.33);
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+      }
+      .download a:hover, .download a:focus {
+        background-color:#C32225;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p>This is a clone of Font Friend, a bookmarklet that can change the fonts on a page.</p>
+    <p><a href="http://somadesign.ca/projects/fontfriend/">The original Font Friend</a> stopped working in June 2016 after Google Code went into archive mode.</p>
+    <p>Drag the bookmarklet to your browser toolbar:</p>
+    <p class="download"><a href="javascript:(function()%20{if(typeof%20jQuery=='undefined'){var%20jqit=document.createElement('script');jqit.type='text/javascript';jqit.src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';document.getElementsByTagName('head')[0].appendChild(jqit);}%20_my_script=document.createElement('script');_my_script.type='text/javascript';_my_script.src='https://cdn.rawgit.com/jay/font-friend/master/font-friend.js';document.getElementsByTagName('head')[0].appendChild(_my_script);})();">FontFriend</a></p>
+  </body>
+</html>
