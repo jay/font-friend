@@ -32,6 +32,9 @@
     <p>This is a clone of Font Friend, a bookmarklet that can change the fonts on a page.</p>
     <p><a href="http://somadesign.ca/projects/fontfriend/">The original Font Friend</a> stopped working in June 2016 after Google Code went into archive mode.</p>
     <p>Drag the bookmarklet to your browser toolbar:</p>
-    <p class="download"><a href="javascript:(function()%20{if(typeof%20jQuery=='undefined'){var%20jqit=document.createElement('script');jqit.type='text/javascript';jqit.src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';document.getElementsByTagName('head')[0].appendChild(jqit);}%20_my_script=document.createElement('script');_my_script.type='text/javascript';_my_script.src='https://cdn.rawgit.com/jay/font-friend/master/font-friend.js';document.getElementsByTagName('head')[0].appendChild(_my_script);})();">FontFriend</a></p>
+    <p class="download"><a href="javascript:(function()%20{if(typeof%20jQuery=='undefined'){var%20jqit=document.createElement('script');jqit.type='text/javascript';jqit.src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';document.getElementsByTagName('head')[0].appendChild(jqit);}%20_my_script=document.createElement('script');_my_script.type='text/javascript';_my_script.src='https://cdn.jsdelivr.net/gh/jay/font-friend@master/font-friend.js';document.getElementsByTagName('head')[0].appendChild(_my_script);})();">FontFriend</a></p>
+    <p>Note the @font-face drag-and-drop detection does not work.</p>
+    <p>Note the bookmarklet will likely not work on webpages that have a Content Security Policy, such as github.com webpages.</p>
+    <p>Also see <a href="https://github.com/davelab6/font-friend">davelab6/font-friend</a></p>
   </body>
 </html>
