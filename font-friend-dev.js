@@ -59,7 +59,7 @@
 		$ = window.jQuery;
 
 		// check if it's already been added. saves against weirdness if clicked again.
-		if ( $('#font-friend').size() !== 0 ) {
+		if ( $('#font-friend').length !== 0 ) {
 			return false;
 		}
 
@@ -326,7 +326,7 @@
 		}
 
 		// exit early if we already have a list
-		if ( existingUl.size() === 1 ) {
+		if ( existingUl.length === 1 ) {
 			existingUl.append(html);
 			return buildFamilies();
 		}
